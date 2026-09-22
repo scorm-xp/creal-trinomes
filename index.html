@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accompagnement des modules</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Local Vendor Scripts with CDN Fallbacks -->
+  <script src="vendor/vue.global.prod.js"></script>
+  <script>if (!window.Vue) document.write('<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"><\\/script>');</script>
+  
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script>if (!window.XLSX) document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\\/script>');</script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0.8; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .animate-slide-in {
+      animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* Large & Spacious custom select */
+    .custom-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.85rem center;
+      background-repeat: no-repeat;
+      background-size: 1.25em 1.25em;
+      padding-right: 2.5rem;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100/70 text-slate-800 antialiased min-h-screen p-4 sm:p-6 lg:p-8 flex flex-col selection:bg-indigo-500 selection:text-white">
+  
+  <div id="app" class="max-w-[1750px] mx-auto w-full flex-1 flex flex-col gap-6 sm:gap-7">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-white border border-slate-200/90 rounded-3xl p-5 sm:px-7 shadow-sm flex items-center justify-between gap-4">
+      
+      <!-- Brand & Title + Cartouches Modules & Créateurs -->
+      <div class="flex items-center gap-4">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-700 flex items-center justify-center text-white shadow-md shadow-indigo-100 shrink-0">
+          <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="flex flex-col justify-center">
+          <div class="flex items-center gap-3">
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">Accompagnement des modules</h1>
+          </div>
+          
+          <!-- Cartouches statistiques épurés -->
+          <div class="flex items-center gap-2.5 mt-1.5">
+            <span class="px-3.5 py-1 rounded-xl text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 shadow-2xs">
+              <span>📚</span> {{ modules.length }} modules en cours
+            </span>
+            <span class="px-3.5 py-1 rounded-xl text-xs font-extrabold bg-purple-50 text-purple-700 border border-purple-200 flex items-center gap-1.5 shadow-2xs">
+              <span>✍️</span> {{ totalActiveCdCsCount }} créateurs accompagnés
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Principales -->
+      <div class="flex items-center gap-3">
+        <!-- INDICATEUR SYNCHRO TEMPS RÉEL TEAMS / CLOUD -->
+        <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200/90 text-xs font-extrabold shadow-2xs">
+          <span v-if="syncStatus === 'connected'" class="flex items-center gap-2 text-emerald-700" title="Synchronisation temps réel active">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Synchro Directe</span>
+          </span>
+          <span v-else-if="syncStatus === 'syncing'" class="flex items-center gap-2 text-indigo-700" title="Envoi de la mise à jour...">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
+            <span>Synchro...</span>
+          </span>
+          <span v-else class="flex items-center gap-2 text-slate-500" title="Mode local">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+            <span>Mode Local</span>
+          </span>
+        </div>
+
+        <!-- IMPORT EXCEL DIRECT -->
+        <label class="px-4 py-2.5 text-xs font-extrabold rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 cursor-pointer shadow-sm shadow-blue-200 transition-all">
+          <span>📥 Importer Excel</span>
+          <input type="file" accept=".xlsx,.xls" @change="importExcelFile" class="hidden" />
+        </label>
+
+        <!-- Menu Sauvegarde -->
+        <div class="relative">
+          <button 
+            @click="toggleMenu('data')" 
+            class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 text-base font-bold transition-all">
+            •••
+          </button>
+          <div v-if="activeMenu === 'data'" class="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-40 text-xs text-slate-700 divide-y divide-slate-100 animate-fade-in">
+            <button @click="exportJSON" class="w-full text-left px-3.5 py-2.5 hover:bg-slate-50 flex items-center gap-2 font-medium">
+              <span>💾</span> Sauvegarder backup JSON
+            </button>
+            <label class="w-full text-left px-3.5 py-2.5 hover:bg-slate-50 flex items-center gap-2 cursor-pointer font-medium">
+              <span>📂</span> Restaurer backup JSON
+              <input type="file" accept=".json" @change="importJSON" class="hidden" />
+            </label>
+            <button @click="resetToDefault" class="w-full text-left px-3.5 py-2.5 hover:bg-rose-50 text-rose-600 flex items-center gap-2 font-bold">
+              <span>🔄</span> Réinitialiser aux données initiales
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- SECTION 1: CHARGE DE L'ÉQUIPE (Avec Avatars réels, aéré sur 3 lignes) -->
+    <section class="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm">
+      
+      <!-- Header : Titre Unique "Charge de l'équipe" sans aucun sous-titre -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h2 class="text-lg font-extrabold text-slate-900 tracking-tight leading-none flex items-center">Charge de l'équipe</h2>
+        </div>
+
+        <!-- Contrôles Tri & Filtre actif -->
+        <div class="flex items-center gap-3 text-xs">
+          <div class="flex items-center gap-1.5 text-slate-600 bg-slate-50 p-1 rounded-xl border border-slate-200/80">
+            <span class="text-xs font-bold px-2.5 text-slate-400">Tri :</span>
+            <button 
+              @click="sortTeamByLoad = true" 
+              :class="[sortTeamByLoad ? 'bg-indigo-600 text-white font-extrabold shadow-xs' : 'text-slate-600 hover:text-slate-900 font-semibold', 'px-3.5 py-1.5 rounded-lg transition-all']">
+              Charge décroissante
+            </button>
+            <button 
+              @click="sortTeamByLoad = false" 
+              :class="[!sortTeamByLoad ? 'bg-indigo-600 text-white font-extrabold shadow-xs' : 'text-slate-600 hover:text-slate-900 font-semibold', 'px-3.5 py-1.5 rounded-lg transition-all']">
+              A ➔ Z
+            </button>
+          </div>
+
+          <button 
+            v-if="selectedPersonFilter" 
+            @click="selectedPersonFilter = ''" 
+            class="px-3.5 py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold hover:bg-rose-100 flex items-center gap-1.5 transition-all">
+            <span>✕ Retirer filtre {{ selectedPersonFilter }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GRILLE SUR 3 LIGNES (5 GRANDES CARTES AÉRÉES PAR LIGNE AVEC AVATARS) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        
+        <div 
+          v-for="member in teamWorkload" 
+          :key="member.name"
+          :class="[
+            selectedPersonFilter === member.name ? 'ring-2 ring-indigo-600 bg-indigo-50/70 border-indigo-300 shadow-md' : 'bg-slate-50/70 hover:bg-white hover:border-indigo-300 hover:shadow-lg border-slate-200/90',
+            'group relative rounded-2xl border p-3.5 flex flex-col justify-between gap-3 transition-all cursor-pointer'
+          ]"
+          @click="handlePersonClick(member.name)"
+        >
+          <!-- Haut : Avatar Photo Réelle (48px) + Nom + Badge Charge -->
+          <div class="flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              
+              <!-- Avatar transparent sans cadre carré -->
+              <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                <img 
+                  v-if="getColleagueAvatar(member.name)" 
+                  :src="getColleagueAvatar(member.name)" 
+                  :alt="member.name" 
+                  class="w-full h-full object-contain"
+                />
+                <div 
+                  v-else 
+                  :class="[getAvatarGradient(member.name), 'w-full h-full rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-2xs']">
+                  {{ getInitials(member.name) }}
+                </div>
+              </div>
+
+              <div class="min-w-0">
+                <div class="text-sm font-extrabold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
+                  {{ member.name }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Grand Badge Total Créateurs Uniques avec padding élégant -->
+            <div :class="[getLoadBadgePill(member.total), 'px-3 py-1.5 rounded-2xl text-sm font-black text-center shadow-xs shrink-0 flex flex-col items-center justify-center min-w-[62px]']">
+              <span>{{ member.total }}</span>
+              <span class="text-[9px] font-extrabold uppercase tracking-wider opacity-85 leading-none mt-0.5">créateurs</span>
+            </div>
+          </div>
+
+          <!-- Jauge de charge visuelle bicolore avec trait séparateur entre Coord (Bleu) et Suppléant (Ambre) -->
+          <div class="w-full bg-slate-200/80 h-2.5 rounded-full overflow-hidden flex">
+            <div 
+              class="h-full rounded-full overflow-hidden flex transition-all duration-300"
+              :style="{ width: Math.min(100, (member.total / maxLoad) * 100) + '%' }"
+            >
+              <!-- Segment Coordination (Indigo) -->
+              <div 
+                v-if="member.coordCount > 0"
+                class="bg-indigo-600 h-full transition-all duration-300"
+                :style="{ width: (member.coordCount / (member.coordCount + member.backupCount || 1)) * 100 + '%' }"
+                :title="member.coordCount + ' créateurs en coordination'"
+              ></div>
+
+              <!-- Trait séparateur net -->
+              <div 
+                v-if="member.coordCount > 0 && member.backupCount > 0" 
+                class="w-[2px] bg-white h-full shrink-0 z-10"
+              ></div>
+
+              <!-- Segment Suppléant (Ambre) -->
+              <div 
+                v-if="member.backupCount > 0"
+                class="bg-amber-500 h-full transition-all duration-300"
+                :style="{ width: (member.backupCount / (member.coordCount + member.backupCount || 1)) * 100 + '%' }"
+                :title="member.backupCount + ' créateurs en suppléance'"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Détail Décomposé : Coordination & Suppléant -->
+          <div class="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-200/60 text-xs">
+            <span class="text-indigo-900 bg-indigo-50/90 border border-indigo-200/80 px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-bold shadow-2xs">
+              <span>🔹</span> {{ member.coordCount }} <span class="text-indigo-600 font-semibold">coord.</span>
+            </span>
+            <span class="text-amber-900 bg-amber-50/90 border border-amber-200/80 px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-bold shadow-2xs">
+              <span>🔸</span> {{ member.backupCount }} <span class="text-amber-700 font-semibold">suppléant</span>
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: FILTRES NIVEAUX ET DISCIPLINES -->
+    <section class="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Niveaux Pills (Niveaux actifs uniquement) -->
+      <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar py-1">
+        <span class="text-xs font-extrabold text-slate-400 mr-1 uppercase tracking-wider">Niveau :</span>
+        
+        <button 
+          @click="selectedLevel = 'ALL'"
+          :class="[selectedLevel === 'ALL' ? 'bg-slate-900 text-white font-extrabold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold', 'px-4 py-2 text-xs sm:text-sm rounded-xl transition-all']">
+          Tous ({{ modules.length }})
+        </button>
+        
+        <button 
+          v-for="lvl in activeLevelsWithModules" 
+          :key="lvl" 
+          @click="selectedLevel = lvl"
+          :class="[
+            selectedLevel === lvl ? getLevelActiveBadgeClass(lvl) : 'bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold', 
+            'px-4 py-2 text-xs sm:text-sm rounded-xl font-bold flex items-center gap-1.5 transition-all'
+          ]">
+          <span>{{ lvl }}</span>
+          <span class="text-xs opacity-75">({{ getLevelCount(lvl) }})</span>
+        </button>
+      </div>
+
+      <!-- Discipline & Filtre Personne -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Discipline :</span>
+          <select 
+            v-model="selectedDiscipline" 
+            class="custom-select text-sm font-bold bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-200 cursor-pointer min-w-[200px]">
+            <option value="ALL">Toutes disciplines</option>
+            <option v-for="d in availableDisciplines" :key="d" :value="d">{{ d }}</option>
+          </select>
+        </div>
+
+        <!-- Filtre Actif Collègue -->
+        <div v-if="selectedPersonFilter" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-extrabold">
+          <span>👤 {{ selectedPersonFilter }}</span>
+          <button @click="selectedPersonFilter = ''" class="hover:text-indigo-950 font-black ml-1 text-sm">✕</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 3: VUE TABLEAU SYNTHÉTIQUE (REGROUPÉE PAR CRÉATEUR DE CONTENU) -->
+    <section class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
+      
+      <div v-if="filteredTableCdcGroups.length === 0" class="p-12 text-center">
+        <div class="text-4xl mb-3">🔍</div>
+        <p class="text-base font-bold text-slate-700">Aucun créateur de contenu ne correspond aux filtres sélectionnés.</p>
+        <p class="text-xs text-slate-400 mt-1">Réinitialisez les filtres pour afficher l'ensemble des modules.</p>
+        <button 
+          @click="selectedLevel = 'ALL'; selectedDiscipline = 'ALL'; selectedPersonFilter = ''" 
+          class="mt-4 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer hover:bg-indigo-700">
+          Réinitialiser les filtres
+        </button>
+      </div>
+
+      <div v-else class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left text-sm text-slate-700 divide-y divide-slate-200/80">
+          <thead class="bg-slate-50 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+            <tr>
+              <th class="px-6 py-4">Niveau</th>
+              <th class="px-6 py-4">Discipline</th>
+              <th class="px-6 py-4">✍️ Créateur de contenu</th>
+              <th class="px-6 py-4">🔹 Coordinateur</th>
+              <th class="px-6 py-4">🔸 Suppléant</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 font-bold">
+            <tr 
+              v-for="row in filteredTableCdcGroups" 
+              :key="row.key"
+              :class="[
+                (!row.coordinator || !row.backup) 
+                  ? 'bg-rose-50/80 hover:bg-rose-100/60 transition-colors' 
+                  : 'hover:bg-indigo-50/30 transition-colors'
+              ]"
+            >
+              <!-- Niveau -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="[getLevelBadgeClass(row.level), 'px-2.5 py-1 rounded-lg font-black text-xs inline-flex items-center']">
+                  {{ row.level }}
+                </span>
+              </td>
+
+              <!-- Discipline -->
+              <td class="px-6 py-4 font-extrabold text-slate-900 whitespace-nowrap">
+                {{ row.discipline }}
+              </td>
+
+              <!-- Créateur de contenu -->
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center gap-2">
+                  <span class="px-3.5 py-1.5 rounded-xl bg-purple-50 text-purple-900 border border-purple-200 font-extrabold text-xs inline-block shadow-2xs">
+                    ✍️ {{ row.cdc }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Coordinateur (Grand select) -->
+              <td class="px-6 py-4 min-w-[260px]">
+                <select 
+                  :value="row.coordinator"
+                  @change="onCdcBlockCoordinatorChange(row, $event.target.value)"
+                  class="custom-select w-full text-xs font-extrabold px-3 py-2 bg-indigo-50/70 border border-indigo-200 rounded-xl text-indigo-950 focus:outline-none cursor-pointer"
+                >
+                  <option value="">-- Aucun coordinateur --</option>
+                  <option v-for="t in team" :key="t" :value="t">{{ getTeamOptionLabel(t) }}</option>
+                </select>
+              </td>
+
+              <!-- Suppléant (Grand select) -->
+              <td class="px-6 py-4 min-w-[260px]">
+                <select 
+                  :value="row.backup"
+                  @change="onCdcBlockBackupChange(row, $event.target.value)"
+                  :class="[
+                    !row.backup ? 'border-amber-400 bg-amber-100/70 ring-2 ring-amber-200' : 'border-amber-200 bg-amber-50/70',
+                    'custom-select w-full text-xs font-extrabold px-3 py-2 border rounded-xl text-amber-950 focus:outline-none cursor-pointer'
+                  ]"
+                >
+                  <option value="">-- Aucun suppléant --</option>
+                  <option v-for="t in team" :key="t" :value="t">{{ getTeamOptionLabel(t) }}</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- TIROIR LATÉRAL DÉTAIL COLLÈGUE (Avec Photo & Fermeture au clic extérieur) -->
+    <div 
+      v-if="drawerPerson" 
+      @click="drawerPerson = null"
+      class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex justify-end z-50 animate-fade-in cursor-pointer"
+    >
+      <div 
+        @click.stop
+        class="bg-white w-full max-w-xl h-full shadow-2xl flex flex-col overflow-hidden animate-slide-in cursor-default"
+      >
+        
+        <!-- Entête Tiroir -->
+        <div class="p-5 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-indigo-50/70 via-slate-50 to-white flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            
+            <!-- Avatar transparent et proportionné -->
+            <div class="w-11 h-11 flex items-center justify-center shrink-0">
+              <img 
+                v-if="getColleagueAvatar(drawerPerson)" 
+                :src="getColleagueAvatar(drawerPerson)" 
+                :alt="drawerPerson" 
+                class="w-full h-full object-contain"
+              />
+              <div 
+                v-else 
+                :class="[getAvatarGradient(drawerPerson), 'w-full h-full rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-2xs']">
+                {{ getInitials(drawerPerson) }}
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-900">{{ drawerPerson }}</h3>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-600 text-white shadow-xs">
+                  {{ drawerActiveStats.total }} créateurs
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 font-medium mt-0.5">
+                {{ drawerActiveStats.coordCount }} en coordination • {{ drawerActiveStats.backupCount }} en suppléance
+              </p>
+            </div>
+          </div>
+
+          <button 
+            @click="drawerPerson = null" 
+            class="w-9 h-9 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center font-bold text-base cursor-pointer transition-colors"
+            title="Fermer">
+            ✕
+          </button>
+        </div>
+
+        <!-- Corps du Tiroir Scrollable -->
+        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar space-y-6">
+          
+          <!-- SECTION 1 : En Coordination -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-indigo-950 uppercase tracking-wider flex items-center gap-2">
+                <span>🔹</span> En Coordination ({{ drawerActiveStats.coordCount }} créateurs)
+              </span>
+            </div>
+
+            <div v-if="drawerCoordCdcGroups.length === 0" class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 text-xs text-center font-semibold">
+              Aucun créateur en coordination.
+            </div>
+
+            <div class="space-y-3">
+              <div 
+                v-for="group in drawerCoordCdcGroups" 
+                :key="group.key"
+                class="p-4 rounded-2xl border border-indigo-100 bg-indigo-50/20 hover:bg-indigo-50/40 flex flex-col gap-2.5 text-sm transition-all shadow-2xs"
+              >
+                <!-- En-tête : Niveau + Discipline + Créateur -->
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span :class="[getLevelBadgeClass(group.level), 'px-2 py-0.5 rounded-md text-xs font-black shrink-0']">{{ group.level }}</span>
+                    <span class="font-extrabold text-slate-900 truncate">{{ group.discipline }}</span>
+                  </div>
+                  <span class="bg-purple-50 text-purple-900 px-2.5 py-0.5 rounded-lg font-extrabold text-xs border border-purple-200 shrink-0">
+                    ✍️ {{ group.cdc }}
+                  </span>
+                </div>
+
+                <!-- Pastilles des modules -->
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span 
+                    v-for="mod in group.modules" 
+                    :key="mod.id"
+                    class="bg-white border border-slate-200 px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-800 shadow-2xs"
+                  >
+                    {{ mod.module }}
+                  </span>
+                </div>
+
+                <!-- Ligne Suppléant -->
+                <div class="text-xs text-slate-500 pt-2 border-t border-indigo-100/70 flex items-center justify-between">
+                  <span>Suppléant :</span>
+                  <strong class="text-slate-800 font-extrabold">{{ group.backup || 'Non attribué' }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2 : En Suppléance -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-amber-950 uppercase tracking-wider flex items-center gap-2">
+                <span>🔸</span> En Suppléance ({{ drawerActiveStats.backupCount }} créateurs)
+              </span>
+            </div>
+
+            <div v-if="drawerBackupCdcGroups.length === 0" class="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 text-xs text-center font-semibold">
+              Aucun créateur en suppléance.
+            </div>
+
+            <div class="space-y-3">
+              <div 
+                v-for="group in drawerBackupCdcGroups" 
+                :key="group.key"
+                class="p-4 rounded-2xl border border-amber-100 bg-amber-50/20 hover:bg-amber-50/40 flex flex-col gap-2.5 text-sm transition-all shadow-2xs"
+              >
+                <!-- En-tête : Niveau + Discipline + Créateur -->
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span :class="[getLevelBadgeClass(group.level), 'px-2 py-0.5 rounded-md text-xs font-black shrink-0']">{{ group.level }}</span>
+                    <span class="font-extrabold text-slate-900 truncate">{{ group.discipline }}</span>
+                  </div>
+                  <span class="bg-purple-50 text-purple-900 px-2.5 py-0.5 rounded-lg font-extrabold text-xs border border-purple-200 shrink-0">
+                    ✍️ {{ group.cdc }}
+                  </span>
+                </div>
+
+                <!-- Pastilles des modules -->
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span 
+                    v-for="mod in group.modules" 
+                    :key="mod.id"
+                    class="bg-white border border-slate-200 px-2.5 py-1 rounded-lg text-xs font-extrabold text-slate-800 shadow-2xs"
+                  >
+                    {{ mod.module }}
+                  </span>
+                </div>
+
+                <!-- Ligne Coordinateur -->
+                <div class="text-xs text-slate-500 pt-2 border-t border-amber-100/70 flex items-center justify-between">
+                  <span>Coordinateur :</span>
+                  <strong class="text-slate-800 font-extrabold">{{ group.coordinator || 'Non attribué' }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pied de Tiroir -->
+        <div class="p-5 border-t border-slate-100 bg-slate-50/90 flex items-center gap-3">
+          <button 
+            @click="selectedPersonFilter = drawerPerson; drawerPerson = null;" 
+            class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-extrabold shadow-md shadow-indigo-200 transition-all text-center">
+            Filtrer toute la vue sur {{ drawerPerson }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Raw Data Sources & Realtime Engine -->
+  <script src="data.json" type="application/json" id="raw-data"></script>
+  <script src="initialData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+
+  <!-- Application Vue Logic -->
+  <script>
+    (function() {
+      try {
+        const { createApp, ref, computed, watch, onMounted } = Vue;
+
+        createApp({
+          setup() {
+            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V17';
+            const DB_NAME = 'CrealTrinomesDB';
+            const STORE_NAME = 'workspace_state';
+
+            // REALTIME MULTI-USER CLOUD ENGINE (Gun.js Relay)
+            const syncStatus = ref('connected');
+            const lastSyncTimestamp = ref(0);
+            let isRemoteUpdating = false;
+            let sharedRoom = null;
+
+            try {
+              if (window.Gun) {
+                const gun = Gun({
+                  peers: [
+                    'https://gun-manhattan.herokuapp.com/gun',
+                    'https://relay.peer.ooo/gun'
+                  ],
+                  localStorage: false
+                });
+                sharedRoom = gun.get('creal_trinomes_sync_v2026_room');
+              }
+            } catch(e) {
+              console.warn("Gun init notice:", e);
+            }
+
+            // INDEXEDDB ENGINE FOR HIGH-RELIABILITY CLIENT PERSISTENCE
+            const openIndexedDB = () => {
+              return new Promise((resolve) => {
+                if (!window.indexedDB) return resolve(null);
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                  const db = e.target.result;
+                  if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                  }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = () => resolve(null);
+              });
+            };
+
+            const saveToIndexedDB = async (payload) => {
+              try {
+                const db = await openIndexedDB();
+                if (!db) return;
+                const tx = db.transaction([STORE_NAME], 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                store.put({
+                  id: 'current_workspace',
+                  modules: JSON.parse(JSON.stringify(payload.modules)),
+                  team: JSON.parse(JSON.stringify(payload.team)),
+                  cdcs: JSON.parse(JSON.stringify(payload.cdcs)),
+                  savedAt: new Date().toISOString()
+                });
+              } catch(err) {
+                console.warn("IndexedDB save failed:", err);
+              }
+            };
+
+            const loadFromIndexedDB = async () => {
+              try {
+                const db = await openIndexedDB();
+                if (!db) return null;
+                return new Promise((resolve) => {
+                  const tx = db.transaction([STORE_NAME], 'readonly');
+                  const store = tx.objectStore(STORE_NAME);
+                  const req = store.get('current_workspace');
+                  req.onsuccess = () => resolve(req.result || null);
+                  req.onerror = () => resolve(null);
+                });
+              } catch(err) {
+                return null;
+              }
+            };
+
+            const clearIndexedDB = async () => {
+              try {
+                const db = await openIndexedDB();
+                if (!db) return;
+                const tx = db.transaction([STORE_NAME], 'readwrite');
+                tx.objectStore(STORE_NAME).clear();
+              } catch(err) {}
+            };
+
+            const initial = window.INITIAL_DATA || {
+              modules: [],
+              team: [],
+              cdcs: [],
+              levels: ['P4', 'P5', 'P6', 'S1', 'S2', 'S3']
+            };
+
+            let savedState = null;
+            try {
+              const item = localStorage.getItem(STORAGE_KEY);
+              if (item) savedState = JSON.parse(item);
+            } catch(e) {}
+
+            const rawModules = savedState ? savedState.modules : initial.modules;
+            const activeOnly = rawModules.filter(m => (m.cdc || '').trim().length > 0);
+
+            const modules = ref(activeOnly);
+            const team = ref(savedState ? savedState.team : initial.team);
+            const allKnownCdCs = ref(savedState ? savedState.cdcs : initial.cdcs);
+            const levels = ref(initial.levels || ['P4', 'P5', 'P6', 'S1', 'S2', 'S3']);
+
+            const selectedLevel = ref('ALL');
+            const selectedDiscipline = ref('ALL');
+            const selectedPersonFilter = ref('');
+            const activeMenu = ref(null);
+            const drawerPerson = ref(null);
+            const sortTeamByLoad = ref(true);
+
+            // Broadcast changes to peers
+            const broadcastRemote = (payload) => {
+              if (sharedRoom && !isRemoteUpdating) {
+                const ts = Date.now();
+                lastSyncTimestamp.value = ts;
+                syncStatus.value = 'syncing';
+                sharedRoom.put({
+                  data: JSON.stringify({
+                    modules: payload.modules,
+                    team: payload.team,
+                    cdcs: payload.cdcs,
+                    timestamp: ts
+                  })
+                }, () => {
+                  syncStatus.value = 'connected';
+                });
+              }
+            };
+
+            // On startup, load any IndexedDB state if available + Listen to cloud room
+            onMounted(async () => {
+              const idbState = await loadFromIndexedDB();
+              if (idbState && idbState.modules && Array.isArray(idbState.modules) && idbState.modules.length > 0) {
+                modules.value = idbState.modules.filter(m => (m.cdc || '').trim().length > 0);
+                if (idbState.team) team.value = idbState.team;
+                if (idbState.cdcs) allKnownCdCs.value = idbState.cdcs;
+              }
+
+              // Listen to real-time events from peers
+              if (sharedRoom) {
+                sharedRoom.on((event) => {
+                  if (!event || !event.data) return;
+                  try {
+                    const parsed = JSON.parse(event.data);
+                    if (parsed && Array.isArray(parsed.modules) && parsed.timestamp && parsed.timestamp > lastSyncTimestamp.value) {
+                      isRemoteUpdating = true;
+                      lastSyncTimestamp.value = parsed.timestamp;
+                      modules.value = parsed.modules.filter(m => (m.cdc || '').trim().length > 0);
+                      if (parsed.team) team.value = parsed.team;
+                      if (parsed.cdcs) allKnownCdCs.value = parsed.cdcs;
+                      syncStatus.value = 'connected';
+                      setTimeout(() => { isRemoteUpdating = false; }, 80);
+                    }
+                  } catch(e) {}
+                });
+              }
+            });
+
+            // Colleague Avatars mapping from Downloads
+            const colleagueAvatars = {
+              'Anne': 'avatars/COM - Anne L fond transparent.png',
+              'Aurélie': 'avatars/COM - Aurélie fond transparent.png',
+              'Greg L.': 'avatars/COM - Gregory L fond transparent.png',
+              'Greg C.': 'avatars/COM - Grégory C fond transparent.png',
+              'Hedwige': 'avatars/COM - Hedwige fond transparent.png',
+              'Jean-Luc': 'avatars/COM - Jean-Luc fond transparent.png',
+              'Lidwine': 'avatars/COM - Lidwine fond transparent.png',
+              'Marco': 'avatars/COM - Marco fond transparent.png',
+              'Marie-France': 'avatars/COM - Marie-France fond transparent.png',
+              'Maya': 'avatars/COM - Maya fond transparent.png',
+              'Mélanie': 'avatars/COM - Mélanie M fond transparent.png',
+              'Nathalie': 'avatars/COM - Nathalie A fond transparent.png',
+              'Vincent': 'avatars/COM - Vincent fond transparent.png'
+            };
+
+            const getColleagueAvatar = (name) => {
+              return colleagueAvatars[name] || null;
+            };
+
+            // Auto Save (IndexedDB + localStorage + Realtime Cloud Broadcast à chaque modification)
+            watch([modules, team, allKnownCdCs], () => {
+              const payload = {
+                modules: modules.value,
+                team: team.value,
+                cdcs: allKnownCdCs.value
+              };
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+              } catch(e) {}
+              saveToIndexedDB(payload);
+              if (!isRemoteUpdating) {
+                broadcastRemote(payload);
+              }
+            }, { deep: true });
+
+            const totalActiveCdCsCount = computed(() => {
+              const set = new Set();
+              modules.value.forEach(m => {
+                const cdc = (m.cdc || '').trim();
+                if (cdc) set.add(cdc);
+              });
+              return set.size;
+            });
+
+            const activeLevelsWithModules = computed(() => {
+              const set = new Set();
+              modules.value.forEach(m => {
+                if (m.level) set.add(m.level);
+              });
+              return Array.from(set).sort((a, b) => {
+                const order = ['P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3'];
+                return order.indexOf(a) - order.indexOf(b);
+              });
+            });
+
+            const availableDisciplines = computed(() => {
+              const set = new Set();
+              modules.value.forEach(m => {
+                if (m.discipline) set.add(m.discipline);
+              });
+              return Array.from(set).sort();
+            });
+
+            // WORKLOAD: 1 unique individual CdC = 1 unit
+            const getPersonLoad = (name) => {
+              if (!name) return { coordCount: 0, backupCount: 0, total: 0, coordModulesCount: 0, backupModulesCount: 0 };
+              
+              const coordCdCs = new Set();
+              const backupCdCs = new Set();
+              let coordModulesCount = 0;
+              let backupModulesCount = 0;
+
+              modules.value.forEach(m => {
+                const cdc = (m.cdc || '').trim();
+                if (!cdc) return;
+
+                if (m.coordinator === name) {
+                  coordModulesCount++;
+                  coordCdCs.add(cdc);
+                }
+                if (m.backup === name) {
+                  backupModulesCount++;
+                  backupCdCs.add(cdc);
+                }
+              });
+
+              const totalUniqueCdCs = new Set([...coordCdCs, ...backupCdCs]).size;
+
+              return {
+                name,
+                coordCount: coordCdCs.size,
+                backupCount: backupCdCs.size,
+                total: totalUniqueCdCs,
+                coordModulesCount,
+                backupModulesCount
+              };
+            };
+
+            const teamWorkload = computed(() => {
+              const list = team.value.map(name => getPersonLoad(name));
+              if (sortTeamByLoad.value) {
+                list.sort((a, b) => b.total - a.total);
+              } else {
+                list.sort((a, b) => a.name.localeCompare(b.name));
+              }
+              return list;
+            });
+
+            const maxLoad = computed(() => {
+              const max = Math.max(...teamWorkload.value.map(t => t.total), 1);
+              return max;
+            });
+
+            // FILTERED ACTIVE MODULES
+            const filteredModules = computed(() => {
+              return modules.value.filter(m => {
+                if (selectedLevel.value !== 'ALL' && m.level !== selectedLevel.value) return false;
+                if (selectedDiscipline.value !== 'ALL' && m.discipline !== selectedDiscipline.value) return false;
+                if (selectedPersonFilter.value) {
+                  const p = selectedPersonFilter.value;
+                  if (m.coordinator !== p && m.backup !== p) return false;
+                }
+                return true;
+              });
+            });
+
+            // TABLE CDC GROUPS (Grouped by Level + Discipline + CdC)
+            const filteredTableCdcGroups = computed(() => {
+              const map = new Map();
+              filteredModules.value.forEach(m => {
+                const cdcName = (m.cdc || '').trim();
+                const key = `${m.level}__${m.discipline}__${cdcName}`;
+                if (!map.has(key)) {
+                  map.set(key, {
+                    key,
+                    level: m.level,
+                    discipline: m.discipline,
+                    cdc: cdcName,
+                    coordinator: m.coordinator,
+                    backup: m.backup,
+                    modules: []
+                  });
+                }
+                const row = map.get(key);
+                row.modules.push(m);
+                if (m.coordinator) row.coordinator = m.coordinator;
+                if (m.backup) row.backup = m.backup;
+              });
+
+              const list = Array.from(map.values());
+              const order = ['P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3'];
+              return list.sort((a, b) => {
+                if (a.level !== b.level) return order.indexOf(a.level) - order.indexOf(b.level);
+                if (a.discipline !== b.discipline) return a.discipline.localeCompare(b.discipline);
+                return a.cdc.localeCompare(b.cdc);
+              });
+            });
+
+            const getLevelCount = (lvl) => {
+              return modules.value.filter(m => m.level === lvl).length;
+            };
+
+            const handlePersonClick = (name) => {
+              drawerPerson.value = name;
+            };
+
+            // DRAWER CDC GROUPS (Grouped by CdC per discipline/level)
+            const drawerCoordCdcGroups = computed(() => {
+              if (!drawerPerson.value) return [];
+              const map = new Map();
+              modules.value.filter(m => (m.cdc || '').trim() && m.coordinator === drawerPerson.value).forEach(m => {
+                const key = `${m.level}__${m.discipline}__${m.cdc.trim()}`;
+                if (!map.has(key)) {
+                  map.set(key, {
+                    key,
+                    level: m.level,
+                    discipline: m.discipline,
+                    cdc: m.cdc.trim(),
+                    backup: m.backup,
+                    modules: []
+                  });
+                }
+                const group = map.get(key);
+                group.modules.push(m);
+                if (m.backup) group.backup = m.backup;
+              });
+              return Array.from(map.values()).sort((a, b) => {
+                const order = ['P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3'];
+                if (a.level !== b.level) return order.indexOf(a.level) - order.indexOf(b.level);
+                return a.discipline.localeCompare(b.discipline) || a.cdc.localeCompare(b.cdc);
+              });
+            });
+
+            const drawerBackupCdcGroups = computed(() => {
+              if (!drawerPerson.value) return [];
+              const map = new Map();
+              modules.value.filter(m => (m.cdc || '').trim() && m.backup === drawerPerson.value).forEach(m => {
+                const key = `${m.level}__${m.discipline}__${m.cdc.trim()}`;
+                if (!map.has(key)) {
+                  map.set(key, {
+                    key,
+                    level: m.level,
+                    discipline: m.discipline,
+                    cdc: m.cdc.trim(),
+                    coordinator: m.coordinator,
+                    modules: []
+                  });
+                }
+                const group = map.get(key);
+                group.modules.push(m);
+                if (m.coordinator) group.coordinator = m.coordinator;
+              });
+              return Array.from(map.values()).sort((a, b) => {
+                const order = ['P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3'];
+                if (a.level !== b.level) return order.indexOf(a.level) - order.indexOf(b.level);
+                return a.discipline.localeCompare(b.discipline) || a.cdc.localeCompare(b.cdc);
+              });
+            });
+
+            const drawerActiveStats = computed(() => {
+              if (!drawerPerson.value) return { coordCount: 0, backupCount: 0, total: 0 };
+              return getPersonLoad(drawerPerson.value);
+            });
+
+            // Handlers
+            const onCdcBlockCoordinatorChange = (cdcBlock, newCoord) => {
+              cdcBlock.coordinator = newCoord;
+              cdcBlock.modules.forEach(m => {
+                m.coordinator = newCoord;
+              });
+            };
+
+            const onCdcBlockBackupChange = (cdcBlock, newBackup) => {
+              cdcBlock.backup = newBackup;
+              cdcBlock.modules.forEach(m => {
+                m.backup = newBackup;
+              });
+            };
+
+            // Option Label Formatter
+            const getTeamOptionLabel = (name) => {
+              if (!name) return '';
+              const load = getPersonLoad(name);
+              return `${name} (🔹 ${load.coordCount}  🔸 ${load.backupCount})`;
+            };
+
+            // Avatar & Badge Helpers
+            const getInitials = (name) => {
+              if (!name) return '??';
+              const parts = name.trim().split(' ');
+              if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+              return name.substring(0, 2).toUpperCase();
+            };
+
+            const getAvatarGradient = (name) => {
+              const gradients = [
+                'bg-gradient-to-tr from-indigo-500 to-purple-600',
+                'bg-gradient-to-tr from-blue-500 to-cyan-500',
+                'bg-gradient-to-tr from-emerald-500 to-teal-600',
+                'bg-gradient-to-tr from-rose-500 to-pink-600',
+                'bg-gradient-to-tr from-amber-500 to-orange-600',
+                'bg-gradient-to-tr from-violet-600 to-fuchsia-600',
+                'bg-gradient-to-tr from-cyan-600 to-blue-700'
+              ];
+              let hash = 0;
+              for (let i = 0; i < (name || '').length; i++) hash += name.charCodeAt(i);
+              return gradients[hash % gradients.length];
+            };
+
+            const getLoadBadgePill = (total) => {
+              if (total === 0) return 'bg-slate-100 text-slate-500 border border-slate-200';
+              if (total <= 4) return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+              if (total <= 8) return 'bg-blue-50 text-blue-700 border border-blue-200';
+              if (total <= 12) return 'bg-amber-50 text-amber-800 border border-amber-200';
+              return 'bg-rose-50 text-rose-700 border border-rose-200';
+            };
+
+            const getProgressBarColor = (total) => {
+              if (total <= 4) return 'bg-emerald-500';
+              if (total <= 8) return 'bg-blue-500';
+              if (total <= 12) return 'bg-amber-500';
+              return 'bg-rose-500';
+            };
+
+            const getLevelBadgeClass = (lvl) => {
+              switch(lvl) {
+                case 'P3': return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+                case 'P4': return 'bg-teal-100 text-teal-800 border border-teal-200';
+                case 'P5': return 'bg-blue-100 text-blue-800 border border-blue-200';
+                case 'P6': return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
+                case 'S1': return 'bg-violet-100 text-violet-800 border border-violet-200';
+                case 'S2': return 'bg-rose-100 text-rose-800 border border-rose-200';
+                case 'S3': return 'bg-amber-100 text-amber-800 border border-amber-200';
+                default: return 'bg-slate-100 text-slate-800';
+              }
+            };
+
+            const getLevelActiveBadgeClass = (lvl) => {
+              switch(lvl) {
+                case 'P3': return 'bg-emerald-600 text-white shadow-xs';
+                case 'P4': return 'bg-teal-600 text-white shadow-xs';
+                case 'P5': return 'bg-blue-600 text-white shadow-xs';
+                case 'P6': return 'bg-indigo-600 text-white shadow-xs';
+                case 'S1': return 'bg-violet-600 text-white shadow-xs';
+                case 'S2': return 'bg-rose-600 text-white shadow-xs';
+                case 'S3': return 'bg-amber-600 text-white shadow-xs';
+                default: return 'bg-slate-900 text-white';
+              }
+            };
+
+            const toggleMenu = (name) => {
+              activeMenu.value = activeMenu.value === name ? null : name;
+            };
+
+            // EXCEL IMPORT PARSER
+            const importExcelFile = (event) => {
+              const file = event.target.files[0];
+              if (!file) return;
+
+              if (!window.XLSX) {
+                alert("La bibliothèque Excel n'est pas disponible.");
+                return;
+              }
+
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                try {
+                  const data = new Uint8Array(e.target.result);
+                  const workbook = XLSX.read(data, { type: 'array' });
+                  
+                  const parsedModules = [];
+                  const extractedTeam = new Set(team.value);
+                  const extractedCdCs = new Set();
+                  const sheetLevels = ['P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3'];
+
+                  workbook.SheetNames.forEach(sheetName => {
+                    const normLevel = sheetName.trim();
+                    if (!sheetLevels.includes(normLevel)) return;
+
+                    const ws = workbook.Sheets[sheetName];
+                    const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                    if (rawRows.length < 2) return;
+
+                    let startRow = 2;
+                    for (let r = 0; r < Math.min(rawRows.length, 5); r++) {
+                      const rowStr = (rawRows[r] || []).join(' ').toLowerCase();
+                      if (rowStr.includes('cours') || rowStr.includes('module')) {
+                        startRow = r + 1;
+                        break;
+                      }
+                    }
+
+                    for (let r = startRow; r < rawRows.length; r++) {
+                      const row = rawRows[r];
+                      if (!row || !row[0]) continue;
+
+                      let cdcNom = String(row[5] || '').trim();
+                      let cdcPrenom = String(row[6] || '').trim();
+                      let fullCdc = '';
+                      if (cdcPrenom && cdcNom) {
+                        fullCdc = `${cdcPrenom} ${cdcNom}`;
+                      } else if (cdcNom) {
+                        fullCdc = cdcNom;
+                      } else if (cdcPrenom) {
+                        fullCdc = cdcPrenom;
+                      }
+
+                      if (!fullCdc) continue;
+
+                      let cours = String(row[0] || '').trim();
+                      if (cours === 'Néelandais') cours = 'Néerlandais';
+                      if (cours === 'Scieces') cours = 'Sciences';
+
+                      let modName = String(row[2] || '').trim();
+                      if (!modName) continue;
+
+                      let coord = String(row[3] || '').trim();
+                      if (['Grégory C.', 'Greg C', 'Grégory C'].includes(coord)) coord = 'Greg C.';
+                      if (['Grégory L.', 'Greg L', 'Gregory L.', 'Gregory L'].includes(coord)) coord = 'Greg L.';
+                      if (coord === 'Vincent ') coord = 'Vincent';
+                      if (coord) extractedTeam.add(coord);
+
+                      let suppleant = String(row[4] || '').trim();
+                      if (['Grégory C.', 'Greg C', 'Grégory C'].includes(suppleant)) suppleant = 'Greg C.';
+                      if (['Grégory L.', 'Greg L', 'Gregory L.', 'Gregory L'].includes(suppleant)) suppleant = 'Greg L.';
+                      if (suppleant === '?') suppleant = '';
+                      if (suppleant) extractedTeam.add(suppleant);
+
+                      extractedCdCs.add(fullCdc);
+
+                      parsedModules.push({
+                        id: `${normLevel}_${cours}_${modName}`.replace(/[\s\-\']/g, '_'),
+                        level: normLevel,
+                        discipline: cours,
+                        module: modName,
+                        coordinator: coord || '',
+                        backup: suppleant || '',
+                        cdc: fullCdc
+                      });
+                    }
+                  });
+
+                  if (parsedModules.length > 0) {
+                    modules.value = parsedModules;
+                    team.value = Array.from(extractedTeam);
+                    allKnownCdCs.value = Array.from(extractedCdCs);
+                    alert(`✅ Importation réussie !\n${parsedModules.length} modules en cours chargés avec ${extractedCdCs.size} créateurs.`);
+                  } else {
+                    alert("Aucun module actif avec créateur reconnu dans ce fichier Excel. Vérifiez les colonnes Nom et Prénom CdC.");
+                  }
+                } catch(err) {
+                  console.error(err);
+                  alert("Erreur lors de la lecture du fichier Excel : " + err.message);
+                }
+              };
+              reader.readAsArrayBuffer(file);
+              event.target.value = '';
+            };
+
+            const exportJSON = () => {
+              const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                modules: modules.value,
+                team: team.value,
+                cdcs: allKnownCdCs.value,
+                date: new Date().toISOString()
+              }, null, 2));
+              const dlAnchorElem = document.createElement('a');
+              dlAnchorElem.setAttribute("href", dataStr);
+              dlAnchorElem.setAttribute("download", `accompagnement_modules_backup_${new Date().toISOString().slice(0,10)}.json`);
+              dlAnchorElem.click();
+              activeMenu.value = null;
+            };
+
+            const importJSON = (event) => {
+              const file = event.target.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                try {
+                  const imported = JSON.parse(e.target.result);
+                  if (imported.modules && Array.isArray(imported.modules)) {
+                    modules.value = imported.modules.filter(m => (m.cdc || '').trim().length > 0);
+                    if (imported.team) team.value = imported.team;
+                    if (imported.cdcs) allKnownCdCs.value = imported.cdcs;
+                    alert("Importation JSON réussie !");
+                  }
+                } catch (err) {
+                  alert("Format de fichier JSON invalide.");
+                }
+              };
+              reader.readAsText(file);
+              activeMenu.value = null;
+            };
+
+            const resetToDefault = () => {
+              if (confirm("Réinitialiser toutes les données ?")) {
+                try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+                clearIndexedDB();
+                modules.value = JSON.parse(JSON.stringify(initial.modules.filter(m => (m.cdc || '').trim().length > 0)));
+                team.value = JSON.parse(JSON.stringify(initial.team));
+                allKnownCdCs.value = JSON.parse(JSON.stringify(initial.cdcs));
+                activeMenu.value = null;
+              }
+            };
+
+            return {
+              modules,
+              team,
+              levels,
+              allKnownCdCs,
+              availableDisciplines,
+              activeLevelsWithModules,
+              selectedLevel,
+              selectedDiscipline,
+              selectedPersonFilter,
+              syncStatus,
+              activeMenu,
+              totalActiveCdCsCount,
+              teamWorkload,
+              maxLoad,
+              filteredModules,
+              filteredTableCdcGroups,
+              getLevelCount,
+              getPersonLoad,
+              handlePersonClick,
+              drawerPerson,
+              drawerCoordCdcGroups,
+              drawerBackupCdcGroups,
+              drawerActiveStats,
+              onCdcBlockCoordinatorChange,
+              onCdcBlockBackupChange,
+              getTeamOptionLabel,
+              getColleagueAvatar,
+              getInitials,
+              getAvatarGradient,
+              getLoadBadgePill,
+              getProgressBarColor,
+              getLevelBadgeClass,
+              getLevelActiveBadgeClass,
+              sortTeamByLoad,
+              toggleMenu,
+              importExcelFile,
+              exportJSON,
+              importJSON,
+              resetToDefault
+            };
+          }
+        }).mount('#app');
+      } catch(err) {
+        console.error("Mount error:", err);
+      }
+    })();
+  </script>
+</body>
+</html>

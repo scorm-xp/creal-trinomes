@@ -1,0 +1,564 @@
+window.INITIAL_DATA = {
+  "modules": [
+    {
+      "id": "P4_Géographie_Module_1",
+      "level": "P4",
+      "discipline": "Géographie",
+      "module": "Module 1",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Marzia Melis"
+    },
+    {
+      "id": "P4_Géographie_Module_2",
+      "level": "P4",
+      "discipline": "Géographie",
+      "module": "Module 2",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Marzia Melis"
+    },
+    {
+      "id": "P4_Géographie_Module_3",
+      "level": "P4",
+      "discipline": "Géographie",
+      "module": "Module 3",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Marzia Melis"
+    },
+    {
+      "id": "P4_Géographie_Module_5",
+      "level": "P4",
+      "discipline": "Géographie",
+      "module": "Module 5",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Clara Faraci"
+    },
+    {
+      "id": "P4_Histoire___FSE_Module_2",
+      "level": "P4",
+      "discipline": "Histoire - FSE",
+      "module": "Module 2",
+      "coordinator": "Hedwige",
+      "backup": "Nathalie",
+      "cdc": "Noémie Vanbaelen"
+    },
+    {
+      "id": "P4_Néerlandais_Module_1",
+      "level": "P4",
+      "discipline": "Néerlandais",
+      "module": "Module 1",
+      "coordinator": "Jean-Luc",
+      "backup": "Marco",
+      "cdc": "Gatien Ricourt"
+    },
+    {
+      "id": "P4_Néerlandais_Module_3",
+      "level": "P4",
+      "discipline": "Néerlandais",
+      "module": "Module 3",
+      "coordinator": "Marco",
+      "backup": "Aurélie",
+      "cdc": "Aline Gallois"
+    },
+    {
+      "id": "P4_Néerlandais_Module_5",
+      "level": "P4",
+      "discipline": "Néerlandais",
+      "module": "Module 5",
+      "coordinator": "Aurélie",
+      "backup": "Marco",
+      "cdc": "Valérie Dudart"
+    },
+    {
+      "id": "P4_Sciences_Module_1",
+      "level": "P4",
+      "discipline": "Sciences",
+      "module": "Module 1",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Frédéric Missoul"
+    },
+    {
+      "id": "P4_Sciences_Module_2",
+      "level": "P4",
+      "discipline": "Sciences",
+      "module": "Module 2",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Frédéric Missoul"
+    },
+    {
+      "id": "P4_Sciences_Module_3",
+      "level": "P4",
+      "discipline": "Sciences",
+      "module": "Module 3",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Frédéric Missoul"
+    },
+    {
+      "id": "P4_Sciences_Module_4",
+      "level": "P4",
+      "discipline": "Sciences",
+      "module": "Module 4",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Frédéric Missoul"
+    },
+    {
+      "id": "P5_Français_Module_1",
+      "level": "P5",
+      "discipline": "Français",
+      "module": "Module 1",
+      "coordinator": "Nathalie",
+      "backup": "Anne",
+      "cdc": "Marine Brancatello"
+    },
+    {
+      "id": "P5_Français_Module_2",
+      "level": "P5",
+      "discipline": "Français",
+      "module": "Module 2",
+      "coordinator": "Hedwige",
+      "backup": "Lidwine",
+      "cdc": "Josiane Mpengekeze"
+    },
+    {
+      "id": "P5_Français_Module_4",
+      "level": "P5",
+      "discipline": "Français",
+      "module": "Module 4",
+      "coordinator": "Nathalie",
+      "backup": "Anne",
+      "cdc": "Alicia Paduart"
+    },
+    {
+      "id": "P5_Français_Module_5",
+      "level": "P5",
+      "discipline": "Français",
+      "module": "Module 5",
+      "coordinator": "Hedwige",
+      "backup": "Anne",
+      "cdc": "Christine Buyse"
+    },
+    {
+      "id": "P5_Mathématiques_Module_1",
+      "level": "P5",
+      "discipline": "Mathématiques",
+      "module": "Module 1",
+      "coordinator": "Lidwine",
+      "backup": "Anne",
+      "cdc": "Mathilde Lerminieau"
+    },
+    {
+      "id": "P5_Mathématiques_Module_2",
+      "level": "P5",
+      "discipline": "Mathématiques",
+      "module": "Module 2",
+      "coordinator": "Anne",
+      "backup": "Lidwine",
+      "cdc": "Tiziana Rinaldi"
+    },
+    {
+      "id": "P5_Mathématiques_Module_3",
+      "level": "P5",
+      "discipline": "Mathématiques",
+      "module": "Module 3",
+      "coordinator": "Lidwine",
+      "backup": "Aurélie",
+      "cdc": "Marzia Melis"
+    },
+    {
+      "id": "P5_Mathématiques_Module_4",
+      "level": "P5",
+      "discipline": "Mathématiques",
+      "module": "Module 4",
+      "coordinator": "Lidwine",
+      "backup": "Nathalie",
+      "cdc": "Luca Mangione"
+    },
+    {
+      "id": "P5_Mathématiques_Module_5",
+      "level": "P5",
+      "discipline": "Mathématiques",
+      "module": "Module 5",
+      "coordinator": "Anne",
+      "backup": "Lidwine",
+      "cdc": "Stéphanie Saey"
+    },
+    {
+      "id": "P5_Néerlandais_Module_1",
+      "level": "P5",
+      "discipline": "Néerlandais",
+      "module": "Module 1",
+      "coordinator": "Aurélie",
+      "backup": "Marco",
+      "cdc": "Antoni Dosen"
+    },
+    {
+      "id": "P5_Néerlandais_Module_3",
+      "level": "P5",
+      "discipline": "Néerlandais",
+      "module": "Module 3",
+      "coordinator": "Jean-Luc",
+      "backup": "Marco",
+      "cdc": "Charlotte Kelfkens"
+    },
+    {
+      "id": "P5_Néerlandais_Module_4",
+      "level": "P5",
+      "discipline": "Néerlandais",
+      "module": "Module 4",
+      "coordinator": "Marco",
+      "backup": "Aurélie",
+      "cdc": "Aurélie Morre"
+    },
+    {
+      "id": "P5_Néerlandais_Module_5",
+      "level": "P5",
+      "discipline": "Néerlandais",
+      "module": "Module 5",
+      "coordinator": "Jean-Luc",
+      "backup": "Marco",
+      "cdc": "Evelyne Fievet"
+    },
+    {
+      "id": "P5_Sciences_Module_2",
+      "level": "P5",
+      "discipline": "Sciences",
+      "module": "Module 2",
+      "coordinator": "Lidwine",
+      "backup": "Nathalie",
+      "cdc": "Belinda Gagliano"
+    },
+    {
+      "id": "P6_Mathématiques_Module_1",
+      "level": "P6",
+      "discipline": "Mathématiques",
+      "module": "Module 1",
+      "coordinator": "Anne",
+      "backup": "Nathalie",
+      "cdc": "Adrien Cupers"
+    },
+    {
+      "id": "P6_Mathématiques_Module_2",
+      "level": "P6",
+      "discipline": "Mathématiques",
+      "module": "Module 2",
+      "coordinator": "Anne",
+      "backup": "Nathalie",
+      "cdc": "Margaux Wafflart"
+    },
+    {
+      "id": "S1_Français_Module_2",
+      "level": "S1",
+      "discipline": "Français",
+      "module": "Module 2",
+      "coordinator": "Maya",
+      "backup": "Greg C.",
+      "cdc": "François Knapen"
+    },
+    {
+      "id": "S1_Français_Module_3",
+      "level": "S1",
+      "discipline": "Français",
+      "module": "Module 3",
+      "coordinator": "Maya",
+      "backup": "Greg C.",
+      "cdc": "Cassandra Cornu"
+    },
+    {
+      "id": "S1_Français_Module_4",
+      "level": "S1",
+      "discipline": "Français",
+      "module": "Module 4",
+      "coordinator": "Vincent",
+      "backup": "Maya",
+      "cdc": "Chloé Paszto"
+    },
+    {
+      "id": "S1_Français_Module_5",
+      "level": "S1",
+      "discipline": "Français",
+      "module": "Module 5",
+      "coordinator": "Vincent",
+      "backup": "Maya",
+      "cdc": "CdC Français"
+    },
+    {
+      "id": "S1_Géographie_Module_2",
+      "level": "S1",
+      "discipline": "Géographie",
+      "module": "Module 2",
+      "coordinator": "Aurélie",
+      "backup": "Greg L.",
+      "cdc": "Jentges Zoé"
+    },
+    {
+      "id": "S1_Géographie_Module_5",
+      "level": "S1",
+      "discipline": "Géographie",
+      "module": "Module 5",
+      "coordinator": "Aurélie",
+      "backup": "Greg L.",
+      "cdc": "Talip Bas"
+    },
+    {
+      "id": "S1_Mathématiques_Module_1",
+      "level": "S1",
+      "discipline": "Mathématiques",
+      "module": "Module 1",
+      "coordinator": "Marie-France",
+      "backup": "Marco",
+      "cdc": "Lorenzo Trovato"
+    },
+    {
+      "id": "S1_Mathématiques_Module_2",
+      "level": "S1",
+      "discipline": "Mathématiques",
+      "module": "Module 2",
+      "coordinator": "Marco",
+      "backup": "Vincent",
+      "cdc": "Christine Ponsart"
+    },
+    {
+      "id": "S1_Mathématiques_Module_3",
+      "level": "S1",
+      "discipline": "Mathématiques",
+      "module": "Module 3",
+      "coordinator": "Marco",
+      "backup": "Vincent",
+      "cdc": "Janique Quertinmont"
+    },
+    {
+      "id": "S1_Mathématiques_Module_5",
+      "level": "S1",
+      "discipline": "Mathématiques",
+      "module": "Module 5",
+      "coordinator": "Marco",
+      "backup": "Vincent",
+      "cdc": "Nicola Petolillo"
+    },
+    {
+      "id": "S1_Sciences_Module_2",
+      "level": "S1",
+      "discipline": "Sciences",
+      "module": "Module 2",
+      "coordinator": "Vincent",
+      "backup": "Sonia",
+      "cdc": "Caroline Doucy"
+    },
+    {
+      "id": "S1_Sciences_Module_3",
+      "level": "S1",
+      "discipline": "Sciences",
+      "module": "Module 3",
+      "coordinator": "Vincent",
+      "backup": "Sonia",
+      "cdc": "Redouane Akel"
+    },
+    {
+      "id": "S1_Socio_éco_Module_1",
+      "level": "S1",
+      "discipline": "Socio-éco",
+      "module": "Module 1",
+      "coordinator": "Greg L.",
+      "backup": "Aurélie",
+      "cdc": "Maryline Booten"
+    },
+    {
+      "id": "S2_Français_Module_1",
+      "level": "S2",
+      "discipline": "Français",
+      "module": "Module 1",
+      "coordinator": "Maya",
+      "backup": "Greg C.",
+      "cdc": "Emilie Di Matteo"
+    },
+    {
+      "id": "S2_Langues_anciennes_Module_1",
+      "level": "S2",
+      "discipline": "Langues anciennes",
+      "module": "Module 1",
+      "coordinator": "Greg C.",
+      "backup": "Maya",
+      "cdc": "Grégory Ioannidopoulos"
+    },
+    {
+      "id": "S2_Histoire_Module_1",
+      "level": "S2",
+      "discipline": "Histoire",
+      "module": "Module 1",
+      "coordinator": "Aurélie",
+      "backup": "Greg L.",
+      "cdc": "Tamara Peretti"
+    },
+    {
+      "id": "S2_Histoire_Module_3",
+      "level": "S2",
+      "discipline": "Histoire",
+      "module": "Module 3",
+      "coordinator": "Aurélie",
+      "backup": "Greg L.",
+      "cdc": "Zoé Jentges"
+    },
+    {
+      "id": "S2_Mathématiques_Module_5",
+      "level": "S2",
+      "discipline": "Mathématiques",
+      "module": "Module 5",
+      "coordinator": "Marie-France",
+      "backup": "Greg C.",
+      "cdc": "Nicolas Dormal"
+    },
+    {
+      "id": "S2_Sciences_Module_1",
+      "level": "S2",
+      "discipline": "Sciences",
+      "module": "Module 1",
+      "coordinator": "Vincent",
+      "backup": "",
+      "cdc": "Nadia Costa"
+    },
+    {
+      "id": "S2_Sciences_Module_2",
+      "level": "S2",
+      "discipline": "Sciences",
+      "module": "Module 2",
+      "coordinator": "Vincent",
+      "backup": "Marco",
+      "cdc": "Caroline Doucy"
+    },
+    {
+      "id": "S3_Histoire_Module_1",
+      "level": "S3",
+      "discipline": "Histoire",
+      "module": "Module 1",
+      "coordinator": "Aurélie",
+      "backup": "Greg L.",
+      "cdc": "Patrice Provost"
+    },
+    {
+      "id": "P5_Néerlandais_Module_2",
+      "level": "P5",
+      "discipline": "Néerlandais",
+      "module": "Module 2",
+      "coordinator": "Jean-Luc",
+      "backup": "",
+      "cdc": "CdC Néerlandais"
+    },
+    {
+      "id": "S2_Géographie_Module_1",
+      "level": "S2",
+      "discipline": "Géographie",
+      "module": "Module 1",
+      "coordinator": "Greg L.",
+      "backup": "Aurélie",
+      "cdc": "CdC FGHES"
+    },
+    {
+      "id": "S2_Sciences_Module_3",
+      "level": "S2",
+      "discipline": "Sciences",
+      "module": "Module 3",
+      "coordinator": "Sonia",
+      "backup": "Vincent",
+      "cdc": "CdC Sciences"
+    },
+    {
+      "id": "P5_Géographie_CdC_Fondamental_1",
+      "level": "P5",
+      "discipline": "Géographie",
+      "module": "Module 1",
+      "coordinator": "",
+      "backup": "",
+      "cdc": "CdC Fondamental 1"
+    },
+    {
+      "id": "P5_Histoire_CdC_Fondamental_2",
+      "level": "P5",
+      "discipline": "Histoire",
+      "module": "Module 1",
+      "coordinator": "",
+      "backup": "",
+      "cdc": "CdC Fondamental 2"
+    }
+  ],
+  "team": [
+    "Aurélie",
+    "Marco",
+    "Anne",
+    "Vincent",
+    "Lidwine",
+    "Hedwige",
+    "Nathalie",
+    "Greg L.",
+    "Greg C.",
+    "Maya",
+    "Jean-Luc",
+    "Marie-France",
+    "Mélanie",
+    "Sonia"
+  ],
+  "cdcs": [
+    "Adrien Cupers",
+    "Alicia Paduart",
+    "Aline Gallois",
+    "Amandine Dubois",
+    "Antoni Dosen",
+    "Aurélie Morre",
+    "Belinda Gagliano",
+    "Caroline Doucy",
+    "Cassandra Cornu",
+    "CdC FGHES",
+    "CdC Fondamental 1",
+    "CdC Fondamental 2",
+    "CdC Français",
+    "CdC Néerlandais",
+    "CdC Sciences",
+    "Charlotte Kelfkens",
+    "Chloé Paszto",
+    "Christine Buyse",
+    "Christine Ponsart",
+    "Clara Faraci",
+    "Emilie Di Matteo",
+    "Evelyne Fievet",
+    "François Knapen",
+    "Frédéric Missoul",
+    "Gatien Ricourt",
+    "Grégory Ioannidopoulos",
+    "Janique Quertinmont",
+    "Jentges Zoé",
+    "Josiane Mpengekeze",
+    "Lorenzo Trovato",
+    "Luca Mangione",
+    "Margaux Wafflart",
+    "Marine Brancatello",
+    "Maryline Booten",
+    "Marzia Melis",
+    "Mathilde Lerminieau",
+    "Nadia Costa",
+    "Nicola Petolillo",
+    "Nicolas Dormal",
+    "Noémie Vanbaelen",
+    "Patrice Provost",
+    "Redouane Akel",
+    "Stéphanie Saey",
+    "Talip Bas",
+    "Tamara Peretti",
+    "Tiziana Rinaldi",
+    "Valérie Dudart",
+    "Zoé Jentges"
+  ],
+  "levels": [
+    "P4",
+    "P5",
+    "P6",
+    "S1",
+    "S2",
+    "S3"
+  ]
+};
