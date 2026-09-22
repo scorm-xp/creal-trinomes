@@ -105,34 +105,23 @@
       <!-- Actions Principales -->
       <div class="flex items-center gap-3">
         <!-- INDICATEUR SYNCHRO TEMPS RÉEL P2P WEBRTC -->
-        <div class="flex items-center gap-2">
-          <div 
-            :class="[
-              connectedPeersCount > 0 
-                ? 'bg-emerald-50 border-emerald-300 text-emerald-800 shadow-emerald-100' 
-                : 'bg-blue-50 border-blue-200 text-blue-800 shadow-blue-50',
-              'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-extrabold shadow-2xs transition-all'
-            ]"
-            :title="connectedPeersCount > 0 ? connectedPeersCount + ' collègue(s) connecté(s) en direct' : 'Prêt à synchroniser en direct dès qu\'un collègue ouvre la page'"
-          >
-            <span v-if="connectedPeersCount > 0" class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-              <span>🟢 En direct ({{ connectedPeersCount }} connecté{{ connectedPeersCount > 1 ? 's' : '' }})</span>
-            </span>
-            <span v-else class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
-              <span>📡 Prêt pour synchro</span>
-            </span>
-          </div>
-
-          <!-- Bouton Copier le lien pour inviter le/la collègue -->
-          <button 
-            @click="copyCollabLink" 
-            class="px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-            title="Copier le lien direct pour collaborer">
-            <span>🔗</span>
-            <span class="hidden sm:inline">Inviter</span>
-          </button>
+        <div 
+          :class="[
+            connectedPeersCount > 0 
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-800 shadow-emerald-100' 
+              : 'bg-blue-50 border-blue-200 text-blue-800 shadow-blue-50',
+            'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-extrabold shadow-2xs transition-all'
+          ]"
+          :title="connectedPeersCount > 0 ? (connectedPeersCount + 1) + ' personnes connectées en direct' : 'Prêt à synchroniser dès qu\'un collègue ouvre la page'"
+        >
+          <span v-if="connectedPeersCount > 0" class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+            <span>🟢 En direct ({{ connectedPeersCount + 1 }} connectés)</span>
+          </span>
+          <span v-else class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+            <span>📡 Prêt pour synchro</span>
+          </span>
         </div>
 
         <!-- IMPORT EXCEL DIRECT -->
