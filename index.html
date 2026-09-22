@@ -862,7 +862,15 @@
             const teamWorkload = computed(() => {
               const list = team.value.map(name => getPersonLoad(name));
               if (sortTeamByLoad.value) {
-                list.sort((a, b) => b.total - a.total);
+                list.sort((a, b) => {
+                  if (b.total !== a.total) {
+                    return b.total - a.total;
+                  }
+                  if (b.coordCount !== a.coordCount) {
+                    return b.coordCount - a.coordCount;
+                  }
+                  return a.name.localeCompare(b.name);
+                });
               } else {
                 list.sort((a, b) => a.name.localeCompare(b.name));
               }
