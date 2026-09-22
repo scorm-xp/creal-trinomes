@@ -104,20 +104,35 @@
 
       <!-- Actions Principales -->
       <div class="flex items-center gap-3">
-        <!-- INDICATEUR SYNCHRO TEMPS RÉEL TEAMS / CLOUD -->
-        <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200/90 text-xs font-extrabold shadow-2xs">
-          <span v-if="syncStatus === 'connected'" class="flex items-center gap-2 text-emerald-700" title="Synchronisation temps réel active">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Synchro Directe</span>
-          </span>
-          <span v-else-if="syncStatus === 'syncing'" class="flex items-center gap-2 text-indigo-700" title="Envoi de la mise à jour...">
-            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
-            <span>Synchro...</span>
-          </span>
-          <span v-else class="flex items-center gap-2 text-slate-500" title="Mode local">
-            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
-            <span>Mode Local</span>
-          </span>
+        <!-- INDICATEUR SYNCHRO TEMPS RÉEL P2P WEBRTC -->
+        <div class="flex items-center gap-2">
+          <div 
+            :class="[
+              connectedPeersCount > 0 
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-800 shadow-emerald-100' 
+                : 'bg-blue-50 border-blue-200 text-blue-800 shadow-blue-50',
+              'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-extrabold shadow-2xs transition-all'
+            ]"
+            :title="connectedPeersCount > 0 ? connectedPeersCount + ' collègue(s) connecté(s) en direct' : 'Prêt à synchroniser en direct dès qu\'un collègue ouvre la page'"
+          >
+            <span v-if="connectedPeersCount > 0" class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span>🟢 En direct ({{ connectedPeersCount }} connecté{{ connectedPeersCount > 1 ? 's' : '' }})</span>
+            </span>
+            <span v-else class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0"></span>
+              <span>📡 Prêt pour synchro</span>
+            </span>
+          </div>
+
+          <!-- Bouton Copier le lien pour inviter le/la collègue -->
+          <button 
+            @click="copyCollabLink" 
+            class="px-3 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+            title="Copier le lien direct pour collaborer">
+            <span>🔗</span>
+            <span class="hidden sm:inline">Inviter</span>
+          </button>
         </div>
 
         <!-- IMPORT EXCEL DIRECT -->
@@ -581,8 +596,6 @@
             </div>
           </div>
 
-        </div>
-
         <!-- Pied de Tiroir -->
         <div class="p-5 border-t border-slate-100 bg-slate-50/90 flex items-center gap-3">
           <button 
@@ -594,12 +607,21 @@
       </div>
     </div>
 
+    <!-- Toast Notification Flottant Temps Réel -->
+    <transition name="fade">
+      <div 
+        v-if="toastMessage" 
+        class="fixed bottom-6 right-6 z-50 px-4 py-3 bg-slate-900/95 text-white rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-extrabold border border-slate-700/80 backdrop-blur-md animate-fade-in"
+      >
+        <span>{{ toastMessage }}</span>
+      </div>
+    </transition>
+
   </div>
 
   <!-- Raw Data Sources & Realtime Engine -->
   <script src="data.json" type="application/json" id="raw-data"></script>
   <script src="initialData.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 
   <!-- Application Vue Logic -->
   <script>
@@ -613,26 +635,32 @@
             const DB_NAME = 'CrealTrinomesDB';
             const STORE_NAME = 'workspace_state';
 
-            // REALTIME MULTI-USER CLOUD ENGINE (Gun.js Relay)
+            // REALTIME MULTI-USER P2P WEBRTC ENGINE (Trystero MQTT Cluster + BroadcastChannel)
+            const connectedPeersCount = ref(0);
             const syncStatus = ref('connected');
+            const toastMessage = ref('');
+            let toastTimer = null;
             const lastSyncTimestamp = ref(0);
             let isRemoteUpdating = false;
-            let sharedRoom = null;
+            let sendFullState = null;
+            let requestSync = null;
+            let room = null;
+            let localChannel = null;
 
-            try {
-              if (window.Gun) {
-                const gun = Gun({
-                  peers: [
-                    'https://gun-manhattan.herokuapp.com/gun',
-                    'https://relay.peer.ooo/gun'
-                  ],
-                  localStorage: false
-                });
-                sharedRoom = gun.get('creal_trinomes_sync_v2026_room');
+            const showToast = (msg) => {
+              toastMessage.value = msg;
+              if (toastTimer) clearTimeout(toastTimer);
+              toastTimer = setTimeout(() => { toastMessage.value = ''; }, 3500);
+            };
+
+            const copyCollabLink = () => {
+              try {
+                navigator.clipboard.writeText(window.location.href);
+                showToast('🔗 Lien copié ! Envoyez-le à votre collègue.');
+              } catch(e) {
+                showToast('🔗 ' + window.location.href);
               }
-            } catch(e) {
-              console.warn("Gun init notice:", e);
-            }
+            };
 
             // INDEXEDDB ENGINE FOR HIGH-RELIABILITY CLIENT PERSISTENCE
             const openIndexedDB = () => {
@@ -721,22 +749,34 @@
             const drawerPerson = ref(null);
             const sortTeamByLoad = ref(true);
 
-            // Broadcast changes to peers
+            // Broadcast changes to peers (Instant WebRTC P2P < 20ms + Multi-tab < 1ms)
             const broadcastRemote = (payload) => {
-              if (sharedRoom && !isRemoteUpdating) {
-                const ts = Date.now();
-                lastSyncTimestamp.value = ts;
-                syncStatus.value = 'syncing';
-                sharedRoom.put({
-                  data: JSON.stringify({
+              if (isRemoteUpdating) return;
+              const ts = Date.now();
+              lastSyncTimestamp.value = ts;
+
+              // 1. Direct WebRTC P2P Send
+              if (sendFullState) {
+                try {
+                  sendFullState({
                     modules: payload.modules,
                     team: payload.team,
                     cdcs: payload.cdcs,
                     timestamp: ts
-                  })
-                }, () => {
-                  syncStatus.value = 'connected';
-                });
+                  });
+                } catch(e) {}
+              }
+
+              // 2. Multi-tab BroadcastChannel
+              if (localChannel) {
+                try {
+                  localChannel.postMessage({
+                    modules: payload.modules,
+                    team: payload.team,
+                    cdcs: payload.cdcs,
+                    timestamp: ts
+                  });
+                } catch(e) {}
               }
             };
 
@@ -749,23 +789,85 @@
                 if (idbState.cdcs) allKnownCdCs.value = idbState.cdcs;
               }
 
-              // Listen to real-time events from peers
-              if (sharedRoom) {
-                sharedRoom.on((event) => {
-                  if (!event || !event.data) return;
-                  try {
-                    const parsed = JSON.parse(event.data);
-                    if (parsed && Array.isArray(parsed.modules) && parsed.timestamp && parsed.timestamp > lastSyncTimestamp.value) {
+              // Multi-tab BroadcastChannel
+              if (window.BroadcastChannel) {
+                try {
+                  localChannel = new BroadcastChannel('creal_trinomes_sync_bc');
+                  localChannel.onmessage = (event) => {
+                    const data = event.data;
+                    if (data && Array.isArray(data.modules) && data.timestamp && data.timestamp > lastSyncTimestamp.value) {
                       isRemoteUpdating = true;
-                      lastSyncTimestamp.value = parsed.timestamp;
-                      modules.value = parsed.modules.filter(m => (m.cdc || '').trim().length > 0);
-                      if (parsed.team) team.value = parsed.team;
-                      if (parsed.cdcs) allKnownCdCs.value = parsed.cdcs;
-                      syncStatus.value = 'connected';
-                      setTimeout(() => { isRemoteUpdating = false; }, 80);
+                      lastSyncTimestamp.value = data.timestamp;
+                      modules.value = data.modules.filter(m => (m.cdc || '').trim().length > 0);
+                      if (data.team) team.value = data.team;
+                      if (data.cdcs) allKnownCdCs.value = data.cdcs;
+                      setTimeout(() => { isRemoteUpdating = false; }, 60);
                     }
-                  } catch(e) {}
+                  };
+                } catch(e) {}
+              }
+
+              // WebRTC P2P Direct Realtime Engine via Trystero MQTT
+              try {
+                const { joinRoom } = await import('https://esm.sh/trystero@0.22.0/mqtt');
+                const appId = 'creal-fwb-trinomes-collab-2026';
+                room = joinRoom({ appId }, 'creal-main-room');
+
+                const [sendStateAction, onStateAction] = room.makeAction('fullState');
+                const [reqSyncAction, onReqSyncAction] = room.makeAction('reqSync');
+
+                sendFullState = sendStateAction;
+                requestSync = reqSyncAction;
+
+                // Handle incoming state from peer
+                onStateAction((data, peerId) => {
+                  if (!data || !Array.isArray(data.modules)) return;
+                  if (data.timestamp && data.timestamp > lastSyncTimestamp.value) {
+                    isRemoteUpdating = true;
+                    lastSyncTimestamp.value = data.timestamp;
+                    modules.value = data.modules.filter(m => (m.cdc || '').trim().length > 0);
+                    if (data.team) team.value = data.team;
+                    if (data.cdcs) allKnownCdCs.value = data.cdcs;
+                    showToast('⚡ Mise à jour reçue en direct');
+                    setTimeout(() => { isRemoteUpdating = false; }, 60);
+                  }
                 });
+
+                // When a new peer joins, update count and transmit our state
+                room.onPeerJoin((peerId) => {
+                  connectedPeersCount.value = Object.keys(room.getPeers()).length;
+                  showToast('👋 Un collègue est connecté en direct !');
+                  if (modules.value && modules.value.length > 0) {
+                    sendFullState({
+                      modules: modules.value,
+                      team: team.value,
+                      cdcs: allKnownCdCs.value,
+                      timestamp: Date.now()
+                    }, peerId);
+                  }
+                });
+
+                room.onPeerLeave((peerId) => {
+                  connectedPeersCount.value = Object.keys(room.getPeers()).length;
+                });
+
+                // Respond to explicit sync request
+                onReqSyncAction((_, peerId) => {
+                  if (modules.value && modules.value.length > 0) {
+                    sendFullState({
+                      modules: modules.value,
+                      team: team.value,
+                      cdcs: allKnownCdCs.value,
+                      timestamp: Date.now()
+                    }, peerId);
+                  }
+                });
+
+                // Ask if any active peer is already in the room
+                requestSync('need_state');
+
+              } catch(err) {
+                console.warn("WebRTC Realtime Engine notice:", err);
               }
             });
 
@@ -1283,7 +1385,11 @@
               importExcelFile,
               exportJSON,
               importJSON,
-              resetToDefault
+              resetToDefault,
+              connectedPeersCount,
+              toastMessage,
+              copyCollabLink,
+              showToast
             };
           }
         }).mount('#app');
