@@ -620,9 +620,80 @@
 
         createApp({
           setup() {
-            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V17';
+            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V19';
             const DB_NAME = 'CrealTrinomesDB';
             const STORE_NAME = 'workspace_state';
+
+            // CdC ANONYMIZATION MAP & HELPER (First Name + Last Name Initial)
+            const cdcExplicitMap = {
+              'Adrien Cupers': 'Adrien C.',
+              'Alicia Paduart': 'Alicia P.',
+              'Aline Gallois': 'Aline G.',
+              'Antoni Dosen': 'Antoni D.',
+              'Aurélie Morre': 'Aurélie M.',
+              'Belinda Gagliano': 'Belinda G.',
+              'Caroline Doucy': 'Caroline D.',
+              'Cassandra Cornu': 'Cassandra C.',
+              'Charlotte Kelfkens': 'Charlotte K.',
+              'Chloé Paszto': 'Chloé P.',
+              'Christine Buyse': 'Christine B.',
+              'Christine Ponsart': 'Christine P.',
+              'Clara Faraci': 'Clara F.',
+              'Emilie Di Matteo': 'Emilie D.',
+              'Evelyne Fievet': 'Evelyne F.',
+              'François Knapen': 'François K.',
+              'Frédéric Missoul': 'Frédéric M.',
+              'Gatien Ricourt': 'Gatien R.',
+              'Grégory Ioannidopoulos': 'Grégory I.',
+              'Janique Quertinmont': 'Janique Q.',
+              'Jentges Zoé': 'Zoé J.',
+              'Zoé Jentges': 'Zoé J.',
+              'Josiane Mpengekeze': 'Josiane M.',
+              'Lorenzo Trovato': 'Lorenzo T.',
+              'Luca Mangione': 'Luca M.',
+              'Margaux Wafflart': 'Margaux W.',
+              'Marine Brancatello': 'Marine B.',
+              'Maryline Booten': 'Maryline B.',
+              'Marzia Melis': 'Marzia M.',
+              'Mathilde Lerminieau': 'Mathilde L.',
+              'Nadia Costa': 'Nadia C.',
+              'Nicola Petolillo': 'Nicola P.',
+              'Nicolas Dormal': 'Nicolas D.',
+              'Noémie Vanbaelen': 'Noémie V.',
+              'Patrice Provost': 'Patrice P.',
+              'Redouane Akel': 'Redouane A.',
+              'Stéphanie Saey': 'Stéphanie S.',
+              'Talip Bas': 'Talip B.',
+              'Tamara Peretti': 'Tamara P.',
+              'Tiziana Rinaldi': 'Tiziana R.',
+              'Valérie Dudart': 'Valérie D.'
+            };
+
+            const anonymizeCdc = (name) => {
+              if (!name || typeof name !== 'string') return '';
+              const n = name.trim();
+              if (!n) return '';
+              if (cdcExplicitMap[n]) return cdcExplicitMap[n];
+              if (n.startsWith('CdC ')) return n;
+              if (/^[A-Za-zÀ-ÿ\-]+\s+[A-Z]\.?$/.test(n)) {
+                return n.endsWith('.') ? n : n + '.';
+              }
+              const parts = n.split(/\s+/);
+              if (parts.length >= 2) {
+                return `${parts[0]} ${parts[parts.length - 1].charAt(0).toUpperCase()}.`;
+              }
+              return n;
+            };
+
+            const sanitizeModules = (mods) => {
+              if (!Array.isArray(mods)) return [];
+              return mods
+                .filter(m => (m.cdc || '').trim().length > 0)
+                .map(m => ({
+                  ...m,
+                  cdc: anonymizeCdc(m.cdc)
+                }));
+            };
 
             // REALTIME MULTI-USER P2P WEBRTC ENGINE (Trystero MQTT Cluster + BroadcastChannel)
             const connectedPeersCount = ref(0);
@@ -724,11 +795,11 @@
             } catch(e) {}
 
             const rawModules = savedState ? savedState.modules : initial.modules;
-            const activeOnly = rawModules.filter(m => (m.cdc || '').trim().length > 0);
+            const activeOnly = sanitizeModules(rawModules);
 
             const modules = ref(activeOnly);
             const team = ref(savedState ? savedState.team : initial.team);
-            const allKnownCdCs = ref(savedState ? savedState.cdcs : initial.cdcs);
+            const allKnownCdCs = ref(savedState && savedState.cdcs ? savedState.cdcs.map(anonymizeCdc) : initial.cdcs.map(anonymizeCdc));
             const levels = ref(initial.levels || ['P4', 'P5', 'P6', 'S1', 'S2', 'S3']);
 
             const selectedLevel = ref('ALL');
@@ -773,9 +844,9 @@
             onMounted(async () => {
               const idbState = await loadFromIndexedDB();
               if (idbState && idbState.modules && Array.isArray(idbState.modules) && idbState.modules.length > 0) {
-                modules.value = idbState.modules.filter(m => (m.cdc || '').trim().length > 0);
+                modules.value = sanitizeModules(idbState.modules);
                 if (idbState.team) team.value = idbState.team;
-                if (idbState.cdcs) allKnownCdCs.value = idbState.cdcs;
+                if (idbState.cdcs) allKnownCdCs.value = idbState.cdcs.map(anonymizeCdc);
               }
 
               // Multi-tab BroadcastChannel
@@ -787,9 +858,9 @@
                     if (data && Array.isArray(data.modules) && data.timestamp && data.timestamp > lastSyncTimestamp.value) {
                       isRemoteUpdating = true;
                       lastSyncTimestamp.value = data.timestamp;
-                      modules.value = data.modules.filter(m => (m.cdc || '').trim().length > 0);
+                      modules.value = sanitizeModules(data.modules);
                       if (data.team) team.value = data.team;
-                      if (data.cdcs) allKnownCdCs.value = data.cdcs;
+                      if (data.cdcs) allKnownCdCs.value = data.cdcs.map(anonymizeCdc);
                       setTimeout(() => { isRemoteUpdating = false; }, 60);
                     }
                   };
@@ -814,9 +885,9 @@
                   if (data.timestamp && data.timestamp > lastSyncTimestamp.value) {
                     isRemoteUpdating = true;
                     lastSyncTimestamp.value = data.timestamp;
-                    modules.value = data.modules.filter(m => (m.cdc || '').trim().length > 0);
+                    modules.value = sanitizeModules(data.modules);
                     if (data.team) team.value = data.team;
-                    if (data.cdcs) allKnownCdCs.value = data.cdcs;
+                    if (data.cdcs) allKnownCdCs.value = data.cdcs.map(anonymizeCdc);
                     showToast('⚡ Mise à jour reçue en direct');
                     setTimeout(() => { isRemoteUpdating = false; }, 60);
                   }
@@ -1311,9 +1382,9 @@
                 try {
                   const imported = JSON.parse(e.target.result);
                   if (imported.modules && Array.isArray(imported.modules)) {
-                    modules.value = imported.modules.filter(m => (m.cdc || '').trim().length > 0);
+                    modules.value = sanitizeModules(imported.modules);
                     if (imported.team) team.value = imported.team;
-                    if (imported.cdcs) allKnownCdCs.value = imported.cdcs;
+                    if (imported.cdcs) allKnownCdCs.value = imported.cdcs.map(anonymizeCdc);
                     alert("Importation JSON réussie !");
                   }
                 } catch (err) {
@@ -1328,9 +1399,9 @@
               if (confirm("Réinitialiser toutes les données ?")) {
                 try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
                 clearIndexedDB();
-                modules.value = JSON.parse(JSON.stringify(initial.modules.filter(m => (m.cdc || '').trim().length > 0)));
+                modules.value = sanitizeModules(initial.modules);
                 team.value = JSON.parse(JSON.stringify(initial.team));
-                allKnownCdCs.value = JSON.parse(JSON.stringify(initial.cdcs));
+                allKnownCdCs.value = initial.cdcs.map(anonymizeCdc);
                 activeMenu.value = null;
               }
             };

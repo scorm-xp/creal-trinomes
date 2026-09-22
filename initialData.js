@@ -7,7 +7,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Marzia Melis"
+      "cdc": "Marzia M."
     },
     {
       "id": "P4_Géographie_Module_2",
@@ -16,7 +16,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Marzia Melis"
+      "cdc": "Marzia M."
     },
     {
       "id": "P4_Géographie_Module_3",
@@ -25,7 +25,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Marzia Melis"
+      "cdc": "Marzia M."
     },
     {
       "id": "P4_Géographie_Module_5",
@@ -34,7 +34,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Clara Faraci"
+      "cdc": "Clara F."
     },
     {
       "id": "P4_Histoire___FSE_Module_2",
@@ -43,7 +43,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Hedwige",
       "backup": "Nathalie",
-      "cdc": "Noémie Vanbaelen"
+      "cdc": "Noémie V."
     },
     {
       "id": "P4_Néerlandais_Module_1",
@@ -52,7 +52,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Jean-Luc",
       "backup": "Marco",
-      "cdc": "Gatien Ricourt"
+      "cdc": "Gatien R."
     },
     {
       "id": "P4_Néerlandais_Module_3",
@@ -61,7 +61,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Marco",
       "backup": "Aurélie",
-      "cdc": "Aline Gallois"
+      "cdc": "Aline G."
     },
     {
       "id": "P4_Néerlandais_Module_5",
@@ -70,7 +70,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Aurélie",
       "backup": "Marco",
-      "cdc": "Valérie Dudart"
+      "cdc": "Valérie D."
     },
     {
       "id": "P4_Sciences_Module_1",
@@ -79,7 +79,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Frédéric Missoul"
+      "cdc": "Frédéric M."
     },
     {
       "id": "P4_Sciences_Module_2",
@@ -88,7 +88,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Frédéric Missoul"
+      "cdc": "Frédéric M."
     },
     {
       "id": "P4_Sciences_Module_3",
@@ -97,7 +97,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Frédéric Missoul"
+      "cdc": "Frédéric M."
     },
     {
       "id": "P4_Sciences_Module_4",
@@ -106,7 +106,7 @@ window.INITIAL_DATA = {
       "module": "Module 4",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Frédéric Missoul"
+      "cdc": "Frédéric M."
     },
     {
       "id": "P5_Français_Module_1",
@@ -115,7 +115,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Nathalie",
       "backup": "Anne",
-      "cdc": "Marine Brancatello"
+      "cdc": "Marine B."
     },
     {
       "id": "P5_Français_Module_2",
@@ -124,7 +124,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Hedwige",
       "backup": "Lidwine",
-      "cdc": "Josiane Mpengekeze"
+      "cdc": "Josiane M."
     },
     {
       "id": "P5_Français_Module_4",
@@ -133,7 +133,7 @@ window.INITIAL_DATA = {
       "module": "Module 4",
       "coordinator": "Nathalie",
       "backup": "Anne",
-      "cdc": "Alicia Paduart"
+      "cdc": "Alicia P."
     },
     {
       "id": "P5_Français_Module_5",
@@ -142,7 +142,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Hedwige",
       "backup": "Anne",
-      "cdc": "Christine Buyse"
+      "cdc": "Christine B."
     },
     {
       "id": "P5_Mathématiques_Module_1",
@@ -151,7 +151,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Lidwine",
       "backup": "Anne",
-      "cdc": "Mathilde Lerminieau"
+      "cdc": "Mathilde L."
     },
     {
       "id": "P5_Mathématiques_Module_2",
@@ -160,7 +160,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Anne",
       "backup": "Lidwine",
-      "cdc": "Tiziana Rinaldi"
+      "cdc": "Tiziana R."
     },
     {
       "id": "P5_Mathématiques_Module_3",
@@ -169,7 +169,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Lidwine",
       "backup": "Aurélie",
-      "cdc": "Marzia Melis"
+      "cdc": "Marzia M."
     },
     {
       "id": "P5_Mathématiques_Module_4",
@@ -178,7 +178,7 @@ window.INITIAL_DATA = {
       "module": "Module 4",
       "coordinator": "Lidwine",
       "backup": "Nathalie",
-      "cdc": "Luca Mangione"
+      "cdc": "Luca M."
     },
     {
       "id": "P5_Mathématiques_Module_5",
@@ -187,7 +187,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Anne",
       "backup": "Lidwine",
-      "cdc": "Stéphanie Saey"
+      "cdc": "Stéphanie S."
     },
     {
       "id": "P5_Néerlandais_Module_1",
@@ -196,7 +196,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Aurélie",
       "backup": "Marco",
-      "cdc": "Antoni Dosen"
+      "cdc": "Antoni D."
     },
     {
       "id": "P5_Néerlandais_Module_3",
@@ -205,7 +205,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Jean-Luc",
       "backup": "Marco",
-      "cdc": "Charlotte Kelfkens"
+      "cdc": "Charlotte K."
     },
     {
       "id": "P5_Néerlandais_Module_4",
@@ -214,7 +214,7 @@ window.INITIAL_DATA = {
       "module": "Module 4",
       "coordinator": "Marco",
       "backup": "Aurélie",
-      "cdc": "Aurélie Morre"
+      "cdc": "Aurélie M."
     },
     {
       "id": "P5_Néerlandais_Module_5",
@@ -223,7 +223,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Jean-Luc",
       "backup": "Marco",
-      "cdc": "Evelyne Fievet"
+      "cdc": "Evelyne F."
     },
     {
       "id": "P5_Sciences_Module_2",
@@ -232,7 +232,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Lidwine",
       "backup": "Nathalie",
-      "cdc": "Belinda Gagliano"
+      "cdc": "Belinda G."
     },
     {
       "id": "P6_Mathématiques_Module_1",
@@ -241,7 +241,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Anne",
       "backup": "Nathalie",
-      "cdc": "Adrien Cupers"
+      "cdc": "Adrien C."
     },
     {
       "id": "P6_Mathématiques_Module_2",
@@ -250,7 +250,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Anne",
       "backup": "Nathalie",
-      "cdc": "Margaux Wafflart"
+      "cdc": "Margaux W."
     },
     {
       "id": "S1_Français_Module_2",
@@ -259,7 +259,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Maya",
       "backup": "Greg C.",
-      "cdc": "François Knapen"
+      "cdc": "François K."
     },
     {
       "id": "S1_Français_Module_3",
@@ -268,7 +268,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Maya",
       "backup": "Greg C.",
-      "cdc": "Cassandra Cornu"
+      "cdc": "Cassandra C."
     },
     {
       "id": "S1_Français_Module_4",
@@ -277,7 +277,7 @@ window.INITIAL_DATA = {
       "module": "Module 4",
       "coordinator": "Vincent",
       "backup": "Maya",
-      "cdc": "Chloé Paszto"
+      "cdc": "Chloé P."
     },
     {
       "id": "S1_Français_Module_5",
@@ -295,7 +295,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Aurélie",
       "backup": "Greg L.",
-      "cdc": "Jentges Zoé"
+      "cdc": "Zoé J."
     },
     {
       "id": "S1_Géographie_Module_5",
@@ -304,7 +304,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Aurélie",
       "backup": "Greg L.",
-      "cdc": "Talip Bas"
+      "cdc": "Talip B."
     },
     {
       "id": "S1_Mathématiques_Module_1",
@@ -313,7 +313,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Marie-France",
       "backup": "Marco",
-      "cdc": "Lorenzo Trovato"
+      "cdc": "Lorenzo T."
     },
     {
       "id": "S1_Mathématiques_Module_2",
@@ -322,7 +322,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Marco",
       "backup": "Vincent",
-      "cdc": "Christine Ponsart"
+      "cdc": "Christine P."
     },
     {
       "id": "S1_Mathématiques_Module_3",
@@ -331,7 +331,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Marco",
       "backup": "Vincent",
-      "cdc": "Janique Quertinmont"
+      "cdc": "Janique Q."
     },
     {
       "id": "S1_Mathématiques_Module_5",
@@ -340,7 +340,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Marco",
       "backup": "Vincent",
-      "cdc": "Nicola Petolillo"
+      "cdc": "Nicola P."
     },
     {
       "id": "S1_Sciences_Module_2",
@@ -349,7 +349,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Vincent",
       "backup": "Sonia",
-      "cdc": "Caroline Doucy"
+      "cdc": "Caroline D."
     },
     {
       "id": "S1_Sciences_Module_3",
@@ -358,7 +358,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Vincent",
       "backup": "Sonia",
-      "cdc": "Redouane Akel"
+      "cdc": "Redouane A."
     },
     {
       "id": "S1_Socio_éco_Module_1",
@@ -367,7 +367,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Greg L.",
       "backup": "Aurélie",
-      "cdc": "Maryline Booten"
+      "cdc": "Maryline B."
     },
     {
       "id": "S2_Français_Module_1",
@@ -376,7 +376,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Maya",
       "backup": "Greg C.",
-      "cdc": "Emilie Di Matteo"
+      "cdc": "Emilie D."
     },
     {
       "id": "S2_Langues_anciennes_Module_1",
@@ -385,7 +385,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Greg C.",
       "backup": "Maya",
-      "cdc": "Grégory Ioannidopoulos"
+      "cdc": "Grégory I."
     },
     {
       "id": "S2_Histoire_Module_1",
@@ -394,7 +394,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Aurélie",
       "backup": "Greg L.",
-      "cdc": "Tamara Peretti"
+      "cdc": "Tamara P."
     },
     {
       "id": "S2_Histoire_Module_3",
@@ -403,7 +403,7 @@ window.INITIAL_DATA = {
       "module": "Module 3",
       "coordinator": "Aurélie",
       "backup": "Greg L.",
-      "cdc": "Zoé Jentges"
+      "cdc": "Zoé J."
     },
     {
       "id": "S2_Mathématiques_Module_5",
@@ -412,7 +412,7 @@ window.INITIAL_DATA = {
       "module": "Module 5",
       "coordinator": "Marie-France",
       "backup": "Greg C.",
-      "cdc": "Nicolas Dormal"
+      "cdc": "Nicolas D."
     },
     {
       "id": "S2_Sciences_Module_1",
@@ -421,7 +421,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Vincent",
       "backup": "",
-      "cdc": "Nadia Costa"
+      "cdc": "Nadia C."
     },
     {
       "id": "S2_Sciences_Module_2",
@@ -430,7 +430,7 @@ window.INITIAL_DATA = {
       "module": "Module 2",
       "coordinator": "Vincent",
       "backup": "Marco",
-      "cdc": "Caroline Doucy"
+      "cdc": "Caroline D."
     },
     {
       "id": "S3_Histoire_Module_1",
@@ -439,7 +439,7 @@ window.INITIAL_DATA = {
       "module": "Module 1",
       "coordinator": "Aurélie",
       "backup": "Greg L.",
-      "cdc": "Patrice Provost"
+      "cdc": "Patrice P."
     },
     {
       "id": "P5_Néerlandais_Module_2",
@@ -504,54 +504,52 @@ window.INITIAL_DATA = {
     "Sonia"
   ],
   "cdcs": [
-    "Adrien Cupers",
-    "Alicia Paduart",
-    "Aline Gallois",
-    "Amandine Dubois",
-    "Antoni Dosen",
-    "Aurélie Morre",
-    "Belinda Gagliano",
-    "Caroline Doucy",
-    "Cassandra Cornu",
+    "Adrien C.",
+    "Alicia P.",
+    "Aline G.",
+    "Antoni D.",
+    "Aurélie M.",
+    "Belinda G.",
+    "Caroline D.",
+    "Cassandra C.",
     "CdC FGHES",
     "CdC Fondamental 1",
     "CdC Fondamental 2",
     "CdC Français",
     "CdC Néerlandais",
     "CdC Sciences",
-    "Charlotte Kelfkens",
-    "Chloé Paszto",
-    "Christine Buyse",
-    "Christine Ponsart",
-    "Clara Faraci",
-    "Emilie Di Matteo",
-    "Evelyne Fievet",
-    "François Knapen",
-    "Frédéric Missoul",
-    "Gatien Ricourt",
-    "Grégory Ioannidopoulos",
-    "Janique Quertinmont",
-    "Jentges Zoé",
-    "Josiane Mpengekeze",
-    "Lorenzo Trovato",
-    "Luca Mangione",
-    "Margaux Wafflart",
-    "Marine Brancatello",
-    "Maryline Booten",
-    "Marzia Melis",
-    "Mathilde Lerminieau",
-    "Nadia Costa",
-    "Nicola Petolillo",
-    "Nicolas Dormal",
-    "Noémie Vanbaelen",
-    "Patrice Provost",
-    "Redouane Akel",
-    "Stéphanie Saey",
-    "Talip Bas",
-    "Tamara Peretti",
-    "Tiziana Rinaldi",
-    "Valérie Dudart",
-    "Zoé Jentges"
+    "Charlotte K.",
+    "Chloé P.",
+    "Christine B.",
+    "Christine P.",
+    "Clara F.",
+    "Emilie D.",
+    "Evelyne F.",
+    "François K.",
+    "Frédéric M.",
+    "Gatien R.",
+    "Grégory I.",
+    "Janique Q.",
+    "Josiane M.",
+    "Lorenzo T.",
+    "Luca M.",
+    "Margaux W.",
+    "Marine B.",
+    "Maryline B.",
+    "Marzia M.",
+    "Mathilde L.",
+    "Nadia C.",
+    "Nicola P.",
+    "Nicolas D.",
+    "Noémie V.",
+    "Patrice P.",
+    "Redouane A.",
+    "Stéphanie S.",
+    "Talip B.",
+    "Tamara P.",
+    "Tiziana R.",
+    "Valérie D.",
+    "Zoé J."
   ],
   "levels": [
     "P4",
