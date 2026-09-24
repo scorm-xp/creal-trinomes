@@ -73,8 +73,68 @@
   
   <div id="app" class="max-w-[1750px] mx-auto w-full flex-1 flex flex-col gap-6 sm:gap-7">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header class="bg-white border border-slate-200/90 rounded-3xl p-5 sm:px-7 shadow-sm flex items-center justify-between gap-4">
+    <!-- ÉCRAN DE VERROUILLAGE SÉCURISÉ (MOT DE PASSE) -->
+    <div v-if="!isAuthenticated" class="flex-1 min-h-[75vh] flex items-center justify-center p-4">
+      <div class="bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-10 shadow-2xl max-w-md w-full flex flex-col items-center text-center gap-6 animate-fade-in">
+        
+        <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-600 to-indigo-700 flex items-center justify-center text-white shadow-xl shadow-indigo-100">
+          <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Accompagnement CREAL</h2>
+          <p class="text-xs text-slate-500 font-bold mt-1.5 leading-relaxed">
+            Espace sécurisé — Veuillez saisir le mot de passe pour afficher le tableau des modules.
+          </p>
+        </div>
+
+        <form @submit.prevent="checkPassword" class="w-full flex flex-col gap-3.5">
+          <div class="relative w-full">
+            <input 
+              :type="showPassword ? 'text' : 'password'" 
+              v-model="passwordInput"
+              placeholder="Mot de passe d'accès"
+              class="w-full px-4 py-3.5 pr-12 text-sm font-bold rounded-2xl border border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 outline-none transition-all shadow-inner bg-slate-50/60 focus:bg-white"
+              autocomplete="current-password"
+              autofocus
+            />
+            <button 
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 font-bold text-sm cursor-pointer"
+              title="Afficher/masquer le mot de passe"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+
+          <div v-if="passwordError" class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-black animate-fade-in flex items-center justify-center gap-1.5">
+            <span>⚠️</span> <span>Mot de passe incorrect</span>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white rounded-2xl text-sm font-black shadow-lg shadow-indigo-200 transition-all cursor-pointer flex items-center justify-center gap-2">
+            <span>🔓</span>
+            <span>Déverrouiller l'accès</span>
+          </button>
+        </form>
+
+        <p class="text-[11px] text-slate-400 font-semibold">
+          🔒 Accès réservé à l'équipe CREAL
+        </p>
+
+      </div>
+    </div>
+
+    <!-- APPLICATION COMPLÈTE (Affichée uniquement après déverrouillage) -->
+    <template v-else>
+
+      <!-- TOP NAVIGATION BAR -->
+      <header class="bg-white border border-slate-200/90 rounded-3xl p-5 sm:px-7 shadow-sm flex items-center justify-between gap-4">
       
       <!-- Brand & Title + Cartouches Modules & Créateurs -->
       <div class="flex items-center gap-4">
@@ -147,6 +207,9 @@
             </label>
             <button @click="resetToDefault" class="w-full text-left px-3.5 py-2.5 hover:bg-rose-50 text-rose-600 flex items-center gap-2 font-bold">
               <span>🔄</span> Réinitialiser aux données initiales
+            </button>
+            <button @click="lockSession" class="w-full text-left px-3.5 py-2.5 hover:bg-slate-50 text-slate-700 flex items-center gap-2 font-bold">
+              <span>🔒</span> Verrouiller l'accès
             </button>
           </div>
         </div>
@@ -595,6 +658,7 @@
         </div>
       </div>
     </div>
+    </template>
 
     <!-- Toast Notification Flottant Temps Réel -->
     <transition name="fade">
@@ -693,6 +757,43 @@
                   ...m,
                   cdc: anonymizeCdc(m.cdc)
                 }));
+            };
+
+            // AUTHENTICATION & ACCESS GATE
+            const AUTH_PASSWORD = 'Creal-2026#Trinomes!FWB';
+            const AUTH_STORAGE_KEY = 'CREAL_AUTH_TOKEN_V2026';
+
+            const isAuthenticated = ref(
+              localStorage.getItem(AUTH_STORAGE_KEY) === 'GRANTED' ||
+              sessionStorage.getItem(AUTH_STORAGE_KEY) === 'GRANTED'
+            );
+            const passwordInput = ref('');
+            const passwordError = ref(false);
+            const showPassword = ref(false);
+
+            const checkPassword = () => {
+              if (passwordInput.value && passwordInput.value.trim() === AUTH_PASSWORD) {
+                isAuthenticated.value = true;
+                passwordError.value = false;
+                try {
+                  localStorage.setItem(AUTH_STORAGE_KEY, 'GRANTED');
+                } catch(e) {}
+                showToast('🔓 Accès déverrouillé avec succès !');
+              } else {
+                passwordError.value = true;
+              }
+            };
+
+            const lockSession = () => {
+              isAuthenticated.value = false;
+              passwordInput.value = '';
+              passwordError.value = false;
+              try {
+                localStorage.removeItem(AUTH_STORAGE_KEY);
+                sessionStorage.removeItem(AUTH_STORAGE_KEY);
+              } catch(e) {}
+              activeMenu.value = null;
+              showToast('🔒 Accès verrouillé');
             };
 
             // REALTIME MULTI-USER P2P WEBRTC ENGINE (Trystero MQTT Cluster + BroadcastChannel)
@@ -1449,7 +1550,13 @@
               connectedPeersCount,
               toastMessage,
               copyCollabLink,
-              showToast
+              showToast,
+              isAuthenticated,
+              passwordInput,
+              passwordError,
+              showPassword,
+              checkPassword,
+              lockSession
             };
           }
         }).mount('#app');
