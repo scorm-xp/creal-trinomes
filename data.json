@@ -424,15 +424,6 @@
       "cdc": "Nadia C."
     },
     {
-      "id": "S2_Sciences_Module_2",
-      "level": "S2",
-      "discipline": "Sciences",
-      "module": "Module 2",
-      "coordinator": "Vincent",
-      "backup": "Marco",
-      "cdc": "Caroline D."
-    },
-    {
       "id": "S3_Histoire_Module_1",
       "level": "S3",
       "discipline": "Histoire",
