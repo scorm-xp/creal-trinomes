@@ -684,8 +684,8 @@
 
         createApp({
           setup() {
-            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V22';
-            const DB_NAME = 'CrealTrinomesDB';
+            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V23';
+            const DB_NAME = 'CrealTrinomesDB_V23';
             const STORE_NAME = 'workspace_state';
 
             // CdC ANONYMIZATION MAP & HELPER (First Name + Last Name Initial)
@@ -752,7 +752,15 @@
             const sanitizeModules = (mods) => {
               if (!Array.isArray(mods)) return [];
               return mods
-                .filter(m => (m.cdc || '').trim().length > 0)
+                .filter(m => {
+                  const cdc = (m.cdc || '').trim();
+                  if (!cdc) return false;
+                  // Purge removed duplicates across any cached states
+                  if (m.level === 'P4' && m.discipline === 'Géographie' && (cdc === 'Marzia M.' || cdc === 'Marzia Melis' || cdc.startsWith('Marzia'))) return false;
+                  if (m.level === 'S2' && m.discipline === 'Histoire' && (cdc === 'Zoé J.' || cdc === 'Zoé Jentges' || cdc === 'Jentges Zoé' || cdc.includes('Zoé') || cdc.includes('Jentges'))) return false;
+                  if (m.level === 'S2' && m.discipline === 'Sciences' && (cdc === 'Caroline D.' || cdc === 'Caroline Doucy' || cdc.startsWith('Caroline'))) return false;
+                  return true;
+                })
                 .map(m => ({
                   ...m,
                   cdc: anonymizeCdc(m.cdc)
