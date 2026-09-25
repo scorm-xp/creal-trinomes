@@ -1,33 +1,6 @@
 window.INITIAL_DATA = {
   "modules": [
     {
-      "id": "P4_Géographie_Module_1",
-      "level": "P4",
-      "discipline": "Géographie",
-      "module": "Module 1",
-      "coordinator": "Lidwine",
-      "backup": "Aurélie",
-      "cdc": "Marzia M."
-    },
-    {
-      "id": "P4_Géographie_Module_2",
-      "level": "P4",
-      "discipline": "Géographie",
-      "module": "Module 2",
-      "coordinator": "Lidwine",
-      "backup": "Aurélie",
-      "cdc": "Marzia M."
-    },
-    {
-      "id": "P4_Géographie_Module_3",
-      "level": "P4",
-      "discipline": "Géographie",
-      "module": "Module 3",
-      "coordinator": "Lidwine",
-      "backup": "Aurélie",
-      "cdc": "Marzia M."
-    },
-    {
       "id": "P4_Géographie_Module_5",
       "level": "P4",
       "discipline": "Géographie",
