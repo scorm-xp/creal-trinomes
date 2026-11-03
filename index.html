@@ -684,8 +684,8 @@
 
         createApp({
           setup() {
-            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V23';
-            const DB_NAME = 'CrealTrinomesDB_V23';
+            const STORAGE_KEY = 'CREAL_TRINOMES_DATA_V22';
+            const DB_NAME = 'CrealTrinomesDB';
             const STORE_NAME = 'workspace_state';
 
             // CdC ANONYMIZATION MAP & HELPER (First Name + Last Name Initial)
@@ -899,8 +899,20 @@
 
             let savedState = null;
             try {
-              const item = localStorage.getItem(STORAGE_KEY);
-              if (item) savedState = JSON.parse(item);
+              const keysToCheck = [
+                'CREAL_TRINOMES_DATA_V22',
+                'CREAL_TRINOMES_DATA_V21',
+                'CREAL_TRINOMES_DATA_V20',
+                'CREAL_TRINOMES_DATA_V19',
+                'CREAL_TRINOMES_DATA_V23'
+              ];
+              for (const k of keysToCheck) {
+                const item = localStorage.getItem(k);
+                if (item) {
+                  savedState = JSON.parse(item);
+                  break;
+                }
+              }
             } catch(e) {}
 
             const rawModules = savedState ? savedState.modules : initial.modules;
